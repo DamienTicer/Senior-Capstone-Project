@@ -8,6 +8,7 @@ It displays discounted tech products exclusively for Bowie students.
 ## 🚀 Features
 - Bowie student email authentication
 - Product recommendation display with discounted prices
+- Dynamic product slider UI with images and details
 - Mock product data using MySQL
 - Local server and database setup
 - Automatic database initialization on start (for development/demo)
@@ -23,7 +24,15 @@ Senior-Capstone-Project/
 │   ├── server.js
 │   └── package.json
 ├── frontend/
-│   └── index.html
+│   ├── index.html
+│   ├── style.css
+│   ├── app.js
+│   └── img/
+│       ├── iPhone16Promax2.jpg
+│       ├── MacbookAir2024_2.jpg
+│       ├── MicrosoftSurface2024_2.jpg
+│       ├── iPad10thGen2.jpg
+│       └── AppleWatchSeries10_2.jpg
 ├── .gitignore
 ├── package.json
 └── README.md
@@ -57,7 +66,13 @@ In `backend/initDB.js` and `backend/app.js`, update the following with your loca
 password: 'Password1234'
 ```
 
-### 5. Run the Project
+### 5. Prepare Image Assets
+Ensure all product images are placed in:
+```
+frontend/img/
+```
+
+### 6. Run the Project
 From the project root folder:
 ```bash
 npm start
@@ -65,7 +80,7 @@ npm start
 This will:
 ✅ Initialize the database automatically (if needed)  
 ✅ Start the backend server at `http://localhost:3000`  
-✅ Open the frontend website in your browser
+✅ Open the frontend website in your browser with dynamic product slider
 
 ---
 

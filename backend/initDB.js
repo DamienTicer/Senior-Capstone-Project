@@ -5,7 +5,7 @@ const mysql = require('mysql2');
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'Password1234' // Replace with your MySQL password
+  password: 'Password1234'
 });
 
 const databaseName = 'bowie_tech_discount';
@@ -25,42 +25,52 @@ db.query(`CREATE DATABASE IF NOT EXISTS ${databaseName}`, (err) => {
       process.exit(1);
     }
 
-    // Step 3: Create products table
-    const createTableQuery = `
-      CREATE TABLE IF NOT EXISTS products (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(255) NOT NULL,
-        price DECIMAL(10, 2) NOT NULL,
-        discount_price DECIMAL(10, 2) NOT NULL,
-        image_url VARCHAR(255) NOT NULL
-      )
-    `;
+    // Step 3: Drop products table if it exists
+    const dropTableQuery = `DROP TABLE IF EXISTS products`;
 
-    db.query(createTableQuery, (err) => {
+    db.query(dropTableQuery, (err) => {
       if (err) {
-        console.error('❗️ Error creating table:', err);
+        console.error('❗️ Error dropping table:', err);
         process.exit(1);
       }
-      console.log('✅ Products table created or already exists');
+      console.log('✅ Products table dropped (if existed)');
 
-      // Step 4: Insert mock data
-      const insertProducts = `
-        INSERT INTO products (name, price, discount_price, image_url) VALUES
-        ('MacBook Pro 14-inch', 1999.99, 1699.99, 'https://via.placeholder.com/200x150?text=MacBook+Pro'),
-        ('Dell XPS 13', 1399.99, 1199.99, 'https://via.placeholder.com/200x150?text=Dell+XPS+13'),
-        ('iPhone 14 Pro', 999.99, 849.99, 'https://via.placeholder.com/200x150?text=iPhone+14+Pro'),
-        ('Samsung Galaxy S23', 899.99, 749.99, 'https://via.placeholder.com/200x150?text=Galaxy+S23'),
-        ('Lenovo ThinkPad X1', 1499.99, 1299.99, 'https://via.placeholder.com/200x150?text=ThinkPad+X1')
-        ON DUPLICATE KEY UPDATE id=id;
+      // Step 4: Create products table
+      const createTableQuery = `
+        CREATE TABLE products (
+          id INT AUTO_INCREMENT PRIMARY KEY,
+          name VARCHAR(255) NOT NULL,
+          price DECIMAL(10, 2) NOT NULL,
+          discount_price DECIMAL(10, 2) NOT NULL,
+          image_url VARCHAR(255) NOT NULL
+        )
       `;
 
-      db.query(insertProducts, (err) => {
+      db.query(createTableQuery, (err) => {
         if (err) {
-          console.error('❗️ Error inserting mock data:', err);
+          console.error('❗️ Error creating table:', err);
           process.exit(1);
         }
-        console.log('✅ Mock product data inserted');
-        db.end();
+        console.log('✅ Products table created');
+
+        // Step 5: Insert mock data
+        const insertProducts = `
+          INSERT INTO products (name, price, discount_price, image_url) VALUES
+          ('MacBook Air 2024', 1199.99, 999.99, 'http://localhost:3000/img/MacbookAir2024_2.jpg'),
+          ('Microsoft Surface 2024', 1399.99, 1199.99, 'http://localhost:3000/img/MicrosoftSurface2024_2.jpg'),
+          ('iPhone 16 Pro Max', 1099.99, 999.99, 'http://localhost:3000/img/iPhone16Promax2.jpg'),
+          ('iPad 10th Gen', 499.99, 449.99, 'http://localhost:3000/img/iPad10thGen2.jpg'),
+          ('Apple Watch Series 10', 399.99, 349.99, 'http://localhost:3000/img/AppleWatchSeries10_2.jpg');
+        `;
+
+        db.query(insertProducts, (err) => {
+          if (err) {
+            console.error('❗️ Error inserting mock data:', err);
+            process.exit(1);
+          }
+          console.log('✅ Mock product data inserted');
+          db.end();
+        });
       });
     });
   });

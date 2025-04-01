@@ -3,20 +3,23 @@
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Serve static images
+app.use('/img', express.static(path.join(__dirname, '../frontend/img')));
+
 // MySQL Database Connection
 const db = mysql.createConnection({
   host: 'localhost',
-  user: 'root', // Change to your MySQL username
-  password: 'Password1234', // Change to your MySQL password
+  user: 'root',
+  password: 'Password1234',
   database: 'bowie_tech_discount'
 });
 
-// Connect to MySQL
 db.connect(err => {
   if (err) {
     console.error('Database connection failed:', err);
@@ -25,9 +28,9 @@ db.connect(err => {
   console.log('MySQL Connected...');
 });
 
-// ====================== ROUTES ========================= //
+// Routes
 
-// Home Route (Optional)
+// Home Route
 app.get('/', (req, res) => {
   res.send('Bowie Tech Discount API is running...');
 });
@@ -58,8 +61,6 @@ app.post('/login', (req, res) => {
     return res.status(401).json({ message: 'Invalid Bowie student email' });
   }
 });
-
-// ====================================================== //
 
 // Start Server
 const PORT = 3000;
