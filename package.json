@@ -1,0 +1,25 @@
+{
+  "name": "senior-capstone-project",
+  "version": "1.0.0",
+  "description": "This is a mock-up recommendation system developed as part of the Senior Capstone project at Bowie State University. It displays discounted tech products exclusively for Bowie students.",
+  "main": "index.js",
+"scripts": {
+  "start:backend": "node backend/server.js",
+  "start:frontend": "start frontend/index.html",
+  "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\""
+},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DamienTicer/Senior-Capstone-Project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DamienTicer/Senior-Capstone-Project/issues"
+  },
+  "homepage": "https://github.com/DamienTicer/Senior-Capstone-Project#readme",
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
