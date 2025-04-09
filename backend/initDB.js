@@ -1,3 +1,4 @@
+//jared was here
 const mysql = require('mysql'); //loading Mysql library 
 const connection = mysql.createConnection({  //setting up connection details with database
   host: 'localhost',
