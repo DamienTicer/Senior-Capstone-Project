@@ -1,0 +1,177 @@
+<!-- frontend/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BSU Tech Discounts</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+
+    #products {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .product-card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      width: 200px;
+    }
+
+    .product-card img {
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+    }
+
+    .banner {
+      background-color: #0077cc;
+      color: white;
+      text-align: center;
+      padding: 10px 0;
+      font-size: 1.2em;
+    }
+
+    .categories {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      padding: 20px 0;
+    }
+
+    .category-item {
+      flex: 1 1 200px;
+      margin: 10px;
+      padding: 10px;
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+
+    footer {
+      background-color: #f1f1f1;
+      padding: 20px;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .footer-section {
+      margin: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>🎓 Bowie State Tech Discounts 🎓</h1>
+
+  <div id="login-section">
+    <input type="email" id="email" placeholder="Enter your Bowie student email" required>
+    <button onclick="login()">Login</button>
+  </div>
+
+  <div id="after-login" style="display:none;">
+    <div class="banner">🎯 Limited Offer! Get Tech Discounts for Bowie State Students Only!</div>
+
+    <section class="categories">
+      <div class="category-item">
+        <h3>Laptops</h3>
+        <p>Up to 20% off on select models</p>
+      </div>
+      <div class="category-item">
+        <h3>Tablets</h3>
+        <p>Discounted for student use</p>
+      </div>
+      <div class="category-item">
+        <h3>Smartphones</h3>
+        <p>Save up to $150</p>
+      </div>
+      <div class="category-item">
+        <h3>Wearables</h3>
+        <p>Exclusive deals on smartwatches</p>
+      </div>
+    </section>
+
+    <div id="products"></div>
+
+    <footer>
+      <div class="footer-section">
+        <h4>About Us</h4>
+        <p>Providing exclusive tech discounts to Bowie State University students.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Useful Links</h4>
+        <p><a href="#">Home</a> | <a href="#">Products</a> | <a href="#">Contact</a></p>
+      </div>
+      <div class="footer-section">
+        <h4>Newsletter</h4>
+        <p>Sign up for updates on new tech deals.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    async function login() {
+      const email = document.getElementById('email').value;
+      if (!email) {
+        alert('Please enter your email');
+        return;
+      }
+
+      try {
+        const res = await fetch('http://localhost:3000/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+        alert(data.message);
+
+        if (res.status === 200) {
+          document.getElementById('login-section').style.display = 'none';
+          document.getElementById('after-login').style.display = 'block';
+          loadProducts();
+        }
+      } catch (err) {
+        alert('Error connecting to server');
+        console.error(err);
+      }
+    }
+
+    async function loadProducts() {
+      try {
+        const res = await fetch('http://localhost:3000/products');
+        const products = await res.json();
+
+        const container = document.getElementById('products');
+        container.innerHTML = '';
+
+        products.forEach(product => {
+          const card = document.createElement('div');
+          card.className = 'product-card';
+          card.innerHTML = `
+            <img src="${product.image_url}" alt="${product.name}">
+            <h3>${product.name}</h3>
+            <p><strong>Discount Price:</strong> $${product.discount_price}</p>
+            <p><s>Original Price: $${product.price}</s></p>
+          `;
+          container.appendChild(card);
+        });
+      } catch (err) {
+        alert('Failed to load products');
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+
+</html>
