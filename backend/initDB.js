@@ -1,14 +1,14 @@
-const mysql = require('mysql');
-const connection = mysql.createConnection({
+const mysql = require('mysql'); //loading Mysql library 
+const connection = mysql.createConnection({  //setting up connection details with database
   host: 'localhost',
   user: 'root',
   password: '1234', // update if needed
   database: 'bowie_tech_discount'
 });
 
-connection.connect(err => {
-  if (err) throw err;
-  console.log("Connected to MySQL");
+connection.connect(err => { //try to connect with DB, 
+  if (err) throw err;//if it fails,throws an error
+  console.log("Connected to MySQL"); //if it works, log success
 
   // Users Table
   const createUsersTable = `
@@ -19,7 +19,7 @@ connection.connect(err => {
       last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     );
   `;
-  connection.query(createUsersTable, err => {
+  connection.query(createUsersTable, err => { //sends the sql cmds to MySQL to actually create the table.
     if (err) throw err;
     console.log("Users table ready");
   });
@@ -39,7 +39,7 @@ connection.connect(err => {
     console.log("Products table ready");
 
     // Clear and Insert Mock Products
-    const deleteQuery = `DELETE FROM products`;
+    const deleteQuery = `DELETE FROM products`; //empties the products table before inserting new products
     const insertMockProducts = `
       INSERT INTO products (name, price, discount_price, image_url) VALUES
       ('MacBook Pro 14-inch', 1999.99, 1699.99, 'https://via.placeholder.com/200x150?text=MacBook+Pro'),

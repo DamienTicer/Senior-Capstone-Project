@@ -1,14 +1,15 @@
-const express = require('express');
+//app.js
+const express = require('express'); //load Express library
 const app = express();
-const cors = require('cors');
+const cors = require('cors'); // load cors library allows backend to accept requests from from=ntend on another port
 const connection = require('./initDB'); // Import DB connection
 
-app.use(cors());
-app.use(express.json());
+app.use(cors()); // allow the frontend to talk to Express app
+app.use(express.json()); // make it easy to read data sent as JSON format stored in req.body
 
 //POST /login
-app.post('/login', (req, res) => {
-  const { email } = req.body;
+app.post('/login', (req, res) => { //create POST API route
+  const { email } = req.body; // const email = req.body.email;
 
   if (!email || !email.endsWith('@students.bowiestate.edu')) {
     return res.status(400).json({ error: 'Invalid email domain' });
