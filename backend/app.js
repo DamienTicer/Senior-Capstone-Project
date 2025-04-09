@@ -1,69 +1,65 @@
-// backend/app.js
-
-const express = require('express');
-const mysql = require('mysql2');
-const cors = require('cors');
-const path = require('path');
-
+//app.js
+const express = require('express'); //load Express library
 const app = express();
-app.use(cors());
-app.use(express.json());
+const cors = require('cors'); // load cors library allows backend to accept requests from from=ntend on another port
+const connection = require('./initDB'); // Import DB connection
 
-// Serve static images
-app.use('/img', express.static(path.join(__dirname, '../frontend/img')));
+app.use(cors()); // allow the frontend to talk to Express app
+app.use(express.json()); // make it easy to read data sent as JSON format stored in req.body
 
-// MySQL Database Connection
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'Password1234',
-  database: 'bowie_tech_discount'
-});
+//POST /login
+app.post('/login', (req, res) => { //create POST API route
+  const { email } = req.body; // const email = req.body.email;
 
-db.connect(err => {
-  if (err) {
-    console.error('Database connection failed:', err);
-    process.exit(1);
+  if (!email || !email.endsWith('@students.bowiestate.edu')) {
+    return res.status(400).json({ error: 'Invalid email domain' });
   }
-  console.log('MySQL Connected...');
-});
 
-// Routes
+  const checkUserQuery = `SELECT * FROM users WHERE email = ?`;
+  connection.query(checkUserQuery, [email], (err, results) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
 
-// Home Route
-app.get('/', (req, res) => {
-  res.send('Bowie Tech Discount API is running...');
-});
+    if (results.length > 0) {
+      // User exists, update last_login
+      const updateQuery = `UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE email = ?`;
+      connection.query(updateQuery, [email]);
+      return res.json(results[0]);
+    } else {
+      // New user, insert
+      const insertQuery = `INSERT INTO users (email) VALUES (?)`;
+      connection.query(insertQuery, [email], (err, result) => {
+        if (err) return res.status(500).json({ error: 'Insert error' });
 
-// Get All Products
-app.get('/products', (req, res) => {
-  const query = 'SELECT * FROM products';
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error('Error fetching products:', err);
-      return res.status(500).json({ error: 'Database error' });
+        const newUser = {
+          id: result.insertId,
+          email,
+          created_at: new Date(),
+          last_login: new Date()
+        };
+        res.json(newUser);
+      });
     }
-    res.json(results);
   });
 });
 
-// Student Email Login
-app.post('/login', (req, res) => {
-  const { email } = req.body;
+// GET /api/profile/:email
+app.get('/api/profile/:email', (req, res) => {
+  const { email } = req.params;
+  const query = `SELECT * FROM users WHERE email = ?`;
 
-  if (!email || typeof email !== 'string') {
-    return res.status(400).json({ message: 'Invalid email input' });
-  }
+  connection.query(query, [email], (err, results) => {
+    if (err) return res.status(500).json({ error: 'Database error' });
 
-  if (email.endsWith('@students.bowiestate.edu')) {
-    return res.status(200).json({ message: 'Authentication successful' });
-  } else {
-    return res.status(401).json({ message: 'Invalid Bowie student email' });
-  }
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.json(results[0]);
+  });
 });
 
-// Start Server
+// Start the server
 const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(`Server started on http://localhost:${PORT}`);
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
