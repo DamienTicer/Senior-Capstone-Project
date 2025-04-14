@@ -1,34 +1,52 @@
-//app.js
-const express = require('express'); //load Express library
+// app.js
+const express = require('express');
 const app = express();
-const cors = require('cors'); // load cors library allows backend to accept requests from from=ntend on another port
-const connection = require('./initDB'); // Import DB connection
+const cors = require('cors');
+const connection = require('./initDB');
 
-app.use(cors()); // allow the frontend to talk to Express app
-app.use(express.json()); // make it easy to read data sent as JSON format stored in req.body
+app.use(cors());
+app.use(express.json());
 
-//POST /login
-app.post('/login', (req, res) => { //create POST API route
-  const { email } = req.body; // const email = req.body.email;
+// Explicitly verify database connection before handling requests
+connection.connect(err => {
+  if (err) {
+    console.error('❗️ Database connection failed:', err.stack);
+    process.exit(1);
+  }
+  console.log('✅ Database connection successful.');
+});
+
+// POST /login
+app.post('/login', (req, res) => {
+  const { email } = req.body;
 
   if (!email || !email.endsWith('@students.bowiestate.edu')) {
-    return res.status(400).json({ error: 'Invalid email domain' });
+    return res.status(400).json({ message: 'Invalid email domain' });
   }
 
   const checkUserQuery = `SELECT * FROM users WHERE email = ?`;
   connection.query(checkUserQuery, [email], (err, results) => {
-    if (err) return res.status(500).json({ error: 'Database error' });
+    if (err) {
+      console.error('❗️ Database error on SELECT:', err);
+      return res.status(500).json({ message: 'Database error' });
+    }
 
     if (results.length > 0) {
-      // User exists, update last_login
       const updateQuery = `UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE email = ?`;
-      connection.query(updateQuery, [email]);
-      return res.json(results[0]);
+      connection.query(updateQuery, [email], (err) => {
+        if (err) console.error('❗️ Database error on UPDATE:', err);
+      });
+      return res.json({
+        message: 'Login successful!',
+        user: results[0]
+      });
     } else {
-      // New user, insert
       const insertQuery = `INSERT INTO users (email) VALUES (?)`;
       connection.query(insertQuery, [email], (err, result) => {
-        if (err) return res.status(500).json({ error: 'Insert error' });
+        if (err) {
+          console.error('❗️ Database error on INSERT:', err);
+          return res.status(500).json({ message: 'Insert error' });
+        }
 
         const newUser = {
           id: result.insertId,
@@ -36,7 +54,10 @@ app.post('/login', (req, res) => { //create POST API route
           created_at: new Date(),
           last_login: new Date()
         };
-        res.json(newUser);
+        res.json({
+          message: 'New user created successfully!',
+          user: newUser
+        });
       });
     }
   });
@@ -48,7 +69,10 @@ app.get('/api/profile/:email', (req, res) => {
   const query = `SELECT * FROM users WHERE email = ?`;
 
   connection.query(query, [email], (err, results) => {
-    if (err) return res.status(500).json({ error: 'Database error' });
+    if (err) {
+      console.error('❗️ Database error on SELECT profile:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
 
     if (results.length === 0) {
       return res.status(404).json({ error: 'User not found' });
@@ -58,7 +82,23 @@ app.get('/api/profile/:email', (req, res) => {
   });
 });
 
-// Start the server
+app.get('/products', (req, res) => {
+  const query = `SELECT * FROM products`;
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error('❗️ Error fetching products:', err);
+      return res.status(500).json({ message: 'Failed to fetch products' });
+    }
+    res.json(results);
+  });
+});
+
+// Health check endpoint to verify server status quickly
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'Server is running fine!' });
+});
+
+// Start the server explicitly on PORT
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
