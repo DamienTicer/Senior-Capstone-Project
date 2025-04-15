@@ -1,11 +1,16 @@
-// app.js
+// backend/app.js
+
 const express = require('express');
-const app = express();
 const cors = require('cors');
+const app = express();
 const connection = require('./initDB');
+const externalProductsRoute = require('./routes/external-products');
 
 app.use(cors());
 app.use(express.json());
+
+// Optional route for future integration
+app.use(externalProductsRoute);
 
 // Explicitly verify database connection before handling requests
 connection.connect(err => {
@@ -14,6 +19,13 @@ connection.connect(err => {
     process.exit(1);
   }
   console.log('✅ Database connection successful.');
+});
+
+// ====================== ROUTES ========================= //
+
+// Root/Home
+app.get('/', (req, res) => {
+  res.send('Bowie Tech Discount API is running...');
 });
 
 // POST /login
@@ -33,7 +45,7 @@ app.post('/login', (req, res) => {
 
     if (results.length > 0) {
       const updateQuery = `UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE email = ?`;
-      connection.query(updateQuery, [email], (err) => {
+      connection.query(updateQuery, [email], err => {
         if (err) console.error('❗️ Database error on UPDATE:', err);
       });
       return res.json({
@@ -82,6 +94,7 @@ app.get('/api/profile/:email', (req, res) => {
   });
 });
 
+// GET /products
 app.get('/products', (req, res) => {
   const query = `SELECT * FROM products`;
   connection.query(query, (err, results) => {
@@ -93,12 +106,14 @@ app.get('/products', (req, res) => {
   });
 });
 
-// Health check endpoint to verify server status quickly
+// Health check
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'Server is running fine!' });
 });
 
-// Start the server explicitly on PORT
+// ====================================================== //
+
+// Start server
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
