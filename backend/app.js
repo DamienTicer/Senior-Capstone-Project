@@ -8,6 +8,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+//Additonal route for Amazon Products
+const externalProductsRoute = require('./routes/external-products');
+app.use(externalProductsRoute);
+
 // MySQL Database Connection
 const db = mysql.createConnection({
   host: 'localhost',
