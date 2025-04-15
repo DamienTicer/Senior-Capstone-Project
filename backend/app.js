@@ -4,13 +4,9 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const connection = require('./initDB');
-const externalProductsRoute = require('./routes/external-products');
 
 app.use(cors());
 app.use(express.json());
-
-// Optional route for future integration
-app.use(externalProductsRoute);
 
 // Explicitly verify database connection before handling requests
 connection.connect(err => {
