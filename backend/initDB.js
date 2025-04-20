@@ -43,12 +43,13 @@ connection.connect(err => { //try to connect with DB,
     const deleteQuery = `DELETE FROM products`; //empties the products table before inserting new products
     const insertMockProducts = `
       INSERT INTO products (name, price, discount_price, image_url) VALUES
-      ('MacBook Pro 14-inch', 1999.99, 1699.99, 'https://via.placeholder.com/200x150?text=MacBook+Pro'),
-      ('Dell XPS 13', 1399.99, 1199.99, 'https://via.placeholder.com/200x150?text=Dell+XPS+13'),
-      ('iPhone 14 Pro', 999.99, 849.99, 'https://via.placeholder.com/200x150?text=iPhone+14+Pro'),
-      ('Samsung Galaxy S23', 899.99, 749.99, 'https://via.placeholder.com/200x150?text=Galaxy+S23'),
-      ('Lenovo ThinkPad X1', 1499.99, 1299.99, 'https://via.placeholder.com/200x150?text=ThinkPad+X1');
-    `;
+      ('MacBook Air 2024', 1999.99, 1699.99, 'MacbookAir2024_2.jpg'),
+      ('Microsoft Surface 2024', 1399.99, 1199.99, 'MicrosoftSurface2024_2.jpg'),
+      ('iPhone 16 Pro Max', 999.99, 849.99, 'iPhone16Promax2.jpg'),
+      ('iPad 10th Gen', 899.99, 749.99, 'iPad10thGen2.jpg'),
+      ('Apple Watch Series 10', 329.99, 269.99, 'AppleWatchSeries10_2.jpg');
+`    ;
+
     connection.query(deleteQuery, err => {
       if (err) throw err;
       connection.query(insertMockProducts, err => {
