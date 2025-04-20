@@ -19,7 +19,7 @@ const ProductSlider = () => {
             className="product-img"
             src={`./img/${product.image_url}`}
             alt={product.name}
-            onError={(e) => e.target.src = './img/default.jpg'}
+            onError={(e) => { e.target.src = './img/default.jpg'; }}
           />
           <h3>{product.name}</h3>
           <p>Original Price: ${product.price}</p>
