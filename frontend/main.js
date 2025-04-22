@@ -1,5 +1,15 @@
 import { fetchSchoolProfile } from './API.js';
 
+document.addEventListener("DOMContentLoaded", () => {
+  const isLoggedIn = localStorage.getItem("loggedIn");
+
+  if (isLoggedIn === "true") {
+    document.getElementById("login-section").style.display = "none";
+    document.getElementById("after-login").style.display = "block";
+    loadProfile();
+  }
+});
+
 async function login() {
   const email = document.getElementById('email').value;
   if (!email) {
@@ -22,6 +32,7 @@ async function login() {
     }
 
     if (res.status === 200) {
+      localStorage.setItem("loggedIn", "true"); // <-- Remember login
       document.getElementById('login-section').style.display = 'none';
       document.getElementById('after-login').style.display = 'block';
       loadProfile();
@@ -60,6 +71,25 @@ async function loadProfile() {
     techContainer.appendChild(card);
   });
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Check login state on page load
+  const isLoggedIn = localStorage.getItem("loggedIn");
+  if (isLoggedIn === "true") {
+    document.getElementById("login-section").style.display = "none";
+    document.getElementById("after-login").style.display = "block";
+    loadProfile();
+  }
+
+  // Wire logout button
+  const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("loggedIn");
+      location.reload(); // Refresh page to return to login screen
+    });
+  }
+});
 
 // Expose login to global scope for inline onclick fallback
 window.login = login;
