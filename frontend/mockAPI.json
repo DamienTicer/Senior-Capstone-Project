@@ -1,0 +1,14 @@
+{
+  "technologyOnSale": [
+    {
+      "name": "3D Printer",
+      "description": "High-quality 3D printer for rapid prototyping.",
+      "price": "$1,500"
+    },
+    {
+      "name": "VR Headset",
+      "description": "Immersive virtual reality experience for learning.",
+      "price": "$500"
+    }
+  ]
+}

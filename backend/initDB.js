@@ -1,17 +1,21 @@
-//jared was here
-const mysql = require('mysql'); //loading Mysql library 
-const connection = mysql.createConnection({  //setting up connection details with database
+// backend/initDB.js
+
+const mysql = require('mysql2'); // Load MySQL library
+
+// Create a connection to the MySQL database
+const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '1234', // update if needed
+  password: 'Password1234', // Change if your MySQL password is different
   database: 'bowie_tech_discount'
 });
 
-connection.connect(err => { //try to connect with DB, 
-  if (err) throw err;//if it fails,throws an error
-  console.log("Connected to MySQL"); //if it works, log success
+// Connect to MySQL and initialize tables
+connection.connect(err => {
+  if (err) throw err;
+  console.log("✅ Connected to MySQL");
 
-  // Users Table
+  // Create Users table if it doesn't exist
   const createUsersTable = `
     CREATE TABLE IF NOT EXISTS users (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -20,12 +24,12 @@ connection.connect(err => { //try to connect with DB,
       last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     );
   `;
-  connection.query(createUsersTable, err => { //sends the sql cmds to MySQL to actually create the table.
+  connection.query(createUsersTable, err => {
     if (err) throw err;
-    console.log("Users table ready");
+    console.log("🛠️ Users table ready");
   });
 
-  // Products Table
+  // Create Products table if it doesn't exist
   const createProductsTable = `
     CREATE TABLE IF NOT EXISTS products (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -37,24 +41,24 @@ connection.connect(err => { //try to connect with DB,
   `;
   connection.query(createProductsTable, err => {
     if (err) throw err;
-    console.log("Products table ready");
+    console.log("🛠️ Products table ready");
 
-    // Clear and Insert Mock Products
-    const deleteQuery = `DELETE FROM products`; //empties the products table before inserting new products
+    // Delete old mock products and insert new ones
+    const deleteQuery = `DELETE FROM products`;
     const insertMockProducts = `
       INSERT INTO products (name, price, discount_price, image_url) VALUES
-      ('MacBook Air 2024', 1999.99, 1699.99, 'MacbookAir2024_2.jpg'),
-      ('Microsoft Surface 2024', 1399.99, 1199.99, 'MicrosoftSurface2024_2.jpg'),
-      ('iPhone 16 Pro Max', 999.99, 849.99, 'iPhone16Promax2.jpg'),
-      ('iPad 10th Gen', 899.99, 749.99, 'iPad10thGen2.jpg'),
-      ('Apple Watch Series 10', 329.99, 269.99, 'AppleWatchSeries10_2.jpg');
-`    ;
+      ('MacBook Air 2024', 1199.99, 999.99, 'img/MacbookAir2024_2.jpg'),
+      ('Microsoft Surface 2024', 1399.99, 1199.99, 'img/MicrosoftSurface2024_2.jpg'),
+      ('iPhone 16 Pro Max', 1099.99, 949.99, 'img/iPhone16Promax2.jpg'),
+      ('iPad 10th Gen', 449.99, 379.99, 'img/iPad10thGen2.jpg'),
+      ('Apple Watch Series 10', 499.99, 429.99, 'img/AppleWatchSeries10_2.jpg');
+    `;
 
     connection.query(deleteQuery, err => {
       if (err) throw err;
       connection.query(insertMockProducts, err => {
         if (err) throw err;
-        console.log("Mock products inserted");
+        console.log("📦 Mock products inserted");
       });
     });
   });

@@ -1,35 +1,69 @@
-const express = require('express'); // load Express library
+// backend/app.js
+
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
 const app = express();
-const cors = require('cors'); // allows backend to accept requests from frontend on another port
-const path = require('path'); // helps with static file path resolution
-const connection = require('./initDB'); // Import DB connection
+const connection = require('./initDB');
 
-app.use(cors()); // allow the frontend to talk to Express app
-app.use(express.json()); // make it easy to read data sent as JSON format stored in req.body
+// Middleware
+app.use(cors());
+app.use(express.json());
 
-// Serve images from frontend/img
+// Serve static images from frontend/img
 app.use('/img', express.static(path.join(__dirname, '../frontend/img')));
+
+// Verify database connection
+connection.connect(err => {
+  if (err) {
+    console.error('❗️ Database connection failed:', err.stack);
+    process.exit(1);
+  }
+  console.log('✅ Database connection successful.');
+});
+
+// ====================== ROUTES ========================= //
+
+// Home/Health Check
+app.get('/', (req, res) => {
+  res.send('Bowie Tech Discount API is running...');
+});
+
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'Server is running fine!' });
+});
 
 // ================== LOGIN ==================
 app.post('/login', (req, res) => {
   const { email } = req.body;
 
   if (!email || !email.endsWith('@students.bowiestate.edu')) {
-    return res.status(400).json({ error: 'Invalid email domain' });
+    return res.status(400).json({ message: 'Invalid email domain' });
   }
 
   const checkUserQuery = `SELECT * FROM users WHERE email = ?`;
   connection.query(checkUserQuery, [email], (err, results) => {
-    if (err) return res.status(500).json({ error: 'Database error' });
+    if (err) {
+      console.error('❗️ Database error on SELECT:', err);
+      return res.status(500).json({ message: 'Database error' });
+    }
 
     if (results.length > 0) {
       const updateQuery = `UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE email = ?`;
-      connection.query(updateQuery, [email]);
-      return res.json(results[0]);
+      connection.query(updateQuery, [email], err => {
+        if (err) console.error('❗️ Database error on UPDATE:', err);
+      });
+      return res.json({
+        message: 'Login successful!',
+        user: results[0]
+      });
     } else {
       const insertQuery = `INSERT INTO users (email) VALUES (?)`;
       connection.query(insertQuery, [email], (err, result) => {
-        if (err) return res.status(500).json({ error: 'Insert error' });
+        if (err) {
+          console.error('❗️ Database error on INSERT:', err);
+          return res.status(500).json({ message: 'Insert error' });
+        }
 
         const newUser = {
           id: result.insertId,
@@ -37,7 +71,10 @@ app.post('/login', (req, res) => {
           created_at: new Date(),
           last_login: new Date()
         };
-        res.json(newUser);
+        res.json({
+          message: 'New user created successfully!',
+          user: newUser
+        });
       });
     }
   });
@@ -49,7 +86,10 @@ app.get('/api/profile/:email', (req, res) => {
   const query = `SELECT * FROM users WHERE email = ?`;
 
   connection.query(query, [email], (err, results) => {
-    if (err) return res.status(500).json({ error: 'Database error' });
+    if (err) {
+      console.error('❗️ Database error on SELECT profile:', err);
+      return res.status(500).json({ error: 'Database error' });
+    }
 
     if (results.length === 0) {
       return res.status(404).json({ error: 'User not found' });
@@ -63,15 +103,16 @@ app.get('/api/profile/:email', (req, res) => {
 app.get('/products', (req, res) => {
   const query = `SELECT * FROM products`;
   connection.query(query, (err, results) => {
-    if (err) return res.status(500).json({ error: 'Database error' });
+    if (err) {
+      console.error('❗️ Error fetching products:', err);
+      return res.status(500).json({ message: 'Failed to fetch products' });
+    }
 
-    // Ensure fallback to default image if image_url is empty or null
     const productsWithFallback = results.map(product => ({
       ...product,
-      image_url:
-        product.image_url && product.image_url.trim() !== ''
-          ? product.image_url
-          : 'default.jpg'
+      image_url: product.image_url && product.image_url.trim() !== ''
+        ? product.image_url
+        : 'default.jpg'
     }));
 
     res.json(productsWithFallback);
@@ -81,5 +122,5 @@ app.get('/products', (req, res) => {
 // ================== START SERVER ==================
 const PORT = 3000;
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
