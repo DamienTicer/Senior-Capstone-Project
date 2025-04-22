@@ -116,6 +116,7 @@ nav {
 
 footer {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .footerLeft {
@@ -173,73 +174,6 @@ footer {
   font-size: 14px;
 }
 
-@media screen and (max-width: 480px) {
-  nav {
-    padding: 20px;
-  }
-
-  .search {
-    display: none;
-  }
-
-  .navBottom {
-    flex-wrap: wrap;
-  }
-
-  .menuItem {
-    margin: 20px;
-    font-weight: 700;
-    font-size: 20px;
-  }
-
-  .sliderTitle {
-    font-size: 30px;
-    top: 5%;
-    right: 5%;
-  }
-
-  .sliderPrice {
-    top: unset;
-    background-color: lightgrey;
-    left: 0;
-  }
-
-  .buyButton {
-    right: 0;
-    top: 0;
-  }
-
-  .features {
-    flex-direction: column;
-  }
-
-  footer {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .footerLeft {
-    padding: 20px;
-    width: 90%;
-  }
-
-  .footerRight {
-    padding: 20px;
-    width: 90%;
-    align-items: center;
-    background-color: whitesmoke;
-  }
-
-  #products {
-    width: 100%;
-    padding: 20px;
-  }
-
-  .deviceItem {
-    width: 90%;
-  }
-}
-
 .navOfferLogout {
   display: flex;
   flex-direction: column;
@@ -278,4 +212,68 @@ footer {
   padding: 15px;
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* ----------------- MOBILE RESPONSIVE ----------------- */
+@media screen and (max-width: 480px) {
+  nav {
+    padding: 20px;
+  }
+
+  .search {
+    display: none;
+  }
+
+  .navBottom {
+    flex-wrap: wrap;
+  }
+
+  .menuItem {
+    margin: 20px;
+    font-weight: 700;
+    font-size: 20px;
+  }
+
+  .sliderTitle {
+    font-size: 30px;
+    top: 5%;
+    right: 5%;
+  }
+
+  .sliderPrice {
+    top: unset;
+    background-color: lightgrey;
+    left: 0;
+  }
+
+  .buyButton {
+    right: 0;
+    top: 0;
+  }
+
+  footer {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footerLeft {
+    padding: 20px;
+    width: 90%;
+  }
+
+  .footerRight {
+    padding: 20px;
+    width: 90%;
+    align-items: center;
+    background-color: whitesmoke;
+  }
+
+  .deviceItem {
+    width: 90%;
+  }
+
+  #products {
+    width: 100%;
+    padding: 20px;
+  }
 }
