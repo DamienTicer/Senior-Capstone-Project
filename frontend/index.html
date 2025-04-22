@@ -4,194 +4,189 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Bowie State Login</title>
-    <link rel="icon" href="./images/favicon.ico" type="image/x-icon">
-  
-    <!-- Login / Vendor Styles -->
-    <link rel="stylesheet" href="./vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="./fonts/iconic/css/material-design-iconic-font.min.css">
-    <link rel="stylesheet" href="./vendor/animate/animate.css">
-    <link rel="stylesheet" href="./vendor/css-hamburgers/hamburgers.min.css">
-    <link rel="stylesheet" href="./vendor/animsition/css/animsition.min.css">
-    <link rel="stylesheet" href="./vendor/select2/select2.min.css">
-    <link rel="stylesheet" href="./vendor/daterangepicker/daterangepicker.css">
-    <link rel="stylesheet" href="./css/util.css">
-    <link rel="stylesheet" href="./css/main.css">
-  
-    <!-- ✅ Frontend Style (Fixes broken layout after login) -->
-    <link rel="stylesheet" href="style.css">
-  </head>  
-<body>
+    <link rel="icon" href="./images/favicon.ico" type="image/x-icon" />
+    
+    <!-- Vendor Styles (Login) -->
+    <link rel="stylesheet" href="./vendor/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./fonts/font-awesome-4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="./fonts/iconic/css/material-design-iconic-font.min.css" />
+    <link rel="stylesheet" href="./vendor/animate/animate.css" />
+    <link rel="stylesheet" href="./vendor/css-hamburgers/hamburgers.min.css" />
+    <link rel="stylesheet" href="./vendor/animsition/css/animsition.min.css" />
+    <link rel="stylesheet" href="./vendor/select2/select2.min.css" />
+    <link rel="stylesheet" href="./vendor/daterangepicker/daterangepicker.css" />
+    <link rel="stylesheet" href="./css/util.css" />
+    <link rel="stylesheet" href="./css/main.css" />
 
-  <div class="limiter" id="login-section">
-    <div class="container-login100" style="background-image: url('./images/bg-01.jpg');">
-      <div class="wrap-login100">
-        <div class="login100-pic js-tilt" data-tilt>
-          <img src="./images/img-01.png" alt="IMG">
+    <!-- General Styles -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <!-- Login Form -->
+    <div class="limiter" id="login-section">
+      <div class="container-login100" style="background-image: url('./images/bg-01.jpg');">
+        <div class="wrap-login100">
+          <div class="login100-pic js-tilt" data-tilt>
+            <img src="./images/img-01.png" alt="IMG" />
+          </div>
+
+          <form class="login100-form validate-form" id="loginForm">
+            <span class="login100-form-title form-mode-title">Member Login</span>
+
+            <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@bsu.edu">
+              <input class="input100" type="email" name="email" id="email" placeholder="Email" />
+              <span class="focus-input100"></span>
+              <span class="symbol-input100"><i class="zmdi zmdi-email" aria-hidden="true"></i></span>
+            </div>
+
+            <div class="wrap-input100 validate-input" data-validate="Password is required">
+              <input class="input100" type="password" name="password" id="password" placeholder="Password" />
+              <span class="focus-input100"></span>
+              <span class="symbol-input100"><i class="zmdi zmdi-lock" aria-hidden="true"></i></span>
+            </div>
+
+            <div class="wrap-input100 validate-input" id="confirm-group" style="display: none;">
+              <input class="input100" type="password" name="confirm" id="confirm" placeholder="Confirm Password" />
+              <span class="focus-input100"></span>
+              <span class="symbol-input100"><i class="zmdi zmdi-lock-outline" aria-hidden="true"></i></span>
+            </div>
+
+            <div class="container-login100-form-btn">
+              <button class="login100-form-btn" type="submit">Login</button>
+            </div>
+
+            <div class="text-center p-t-12">
+              <span class="txt1">Forgot</span>
+              <a class="txt2" href="#">Username / Password?</a>
+            </div>
+
+            <div class="text-center p-t-136" id="toggleModeText">
+              <a class="txt2" href="#" id="toggleModeBtn">
+                Create your Account
+                <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
+              </a>
+            </div>
+          </form>
         </div>
-
-        <form class="login100-form validate-form" id="loginForm">
-          <span class="login100-form-title form-mode-title">
-            Member Login
-          </span>
-
-          <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@bsu.edu">
-            <input class="input100" type="email" name="email" id="email" placeholder="Email">
-            <span class="focus-input100"></span>
-            <span class="symbol-input100">
-              <i class="zmdi zmdi-email" aria-hidden="true"></i>
-            </span>
-          </div>
-
-          <div class="wrap-input100 validate-input" data-validate="Password is required">
-            <input class="input100" type="password" name="password" id="password" placeholder="Password">
-            <span class="focus-input100"></span>
-            <span class="symbol-input100">
-              <i class="zmdi zmdi-lock" aria-hidden="true"></i>
-            </span>
-          </div>
-
-          <div class="wrap-input100 validate-input" id="confirm-group" style="display: none;">
-            <input class="input100" type="password" name="confirm" id="confirm" placeholder="Confirm Password">
-            <span class="focus-input100"></span>
-            <span class="symbol-input100">
-              <i class="zmdi zmdi-lock-outline" aria-hidden="true"></i>
-            </span>
-          </div>
-
-          <div class="container-login100-form-btn">
-            <button class="login100-form-btn" type="submit">
-              Login
-            </button>
-          </div>
-
-          <div class="text-center p-t-12">
-            <span class="txt1">Forgot </span>
-            <a class="txt2" href="#">Username / Password?</a>
-          </div>
-
-          <div class="text-center p-t-136" id="toggleModeText">
-            <a class="txt2" href="#" id="toggleModeBtn">
-              Create your Account
-              <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
-            </a>
-          </div>
-        </form>
       </div>
     </div>
-  </div>
 
-  <div id="after-login" style="display: none;">
-    <nav id="nav">
-      <div class="navTop">
-        <div class="navItem"><img id="school-logo" alt="School Logo" /></div>
-        <div class="navItem">
-          <div class="search">
-            <input type="text" placeholder="Search..." class="searchInput" />
-            <img src="./img/search.png" width="20" height="20" alt="" class="searchIcon" />
+    <!-- After Login -->
+    <div id="after-login" style="display: none;">
+      <nav id="nav">
+        <div class="navTop">
+          <div class="navItem">
+            <img src="./img/bsu2.png" alt="Bowie State Logo" class="school-logo" />
           </div>
           <div class="navItem">
-            <button id="cartBtn" class="cartButton">🛒 Cart (<span id="cart-count">0</span>)</button>
-          </div>          
+            <div class="search">
+              <input type="text" placeholder="Search..." class="searchInput" />
+              <img src="./img/bsulogo.png" width="20" height="20" alt="" class="searchIcon" />
+            </div>
+            <div class="navItem">
+              <button id="cartBtn" class="cartButton">🛒 Cart (<span id="cart-count">0</span>)</button>
+            </div>
+          </div>
+          <div class="navItem navOfferLogout">
+            <span class="limitedOffer">Limited Offer!</span>
+            <button id="logoutBtn" class="logoutButton">Logout</button>
+          </div>
         </div>
-        <div class="navItem navOfferLogout">
-          <span class="limitedOffer">Limited Offer!</span>
-          <button id="logoutBtn" class="logoutButton">Logout</button>
-        </div>        
-      </div>
-      <div class="navBottom">
-        <a href="not-ready.html" class="menuItem">IPHONE</a>
-        <a href="not-ready.html" class="menuItem">IPAD</a>
-        <a href="not-ready.html" class="menuItem">APPLE WATCH</a>
-        <a href="not-ready.html" class="menuItem">MACBOOK</a>
-        <a href="not-ready.html" class="menuItem">SURFACE</a>
-      </div>
-    </nav>
+        <div class="navBottom">
+          <a href="not-ready.html" class="menuItem">IPHONE</a>
+          <a href="not-ready.html" class="menuItem">IPAD</a>
+          <a href="not-ready.html" class="menuItem">APPLE WATCH</a>
+          <a href="not-ready.html" class="menuItem">MACBOOK</a>
+          <a href="not-ready.html" class="menuItem">SURFACE</a>
+        </div>
+      </nav>
 
-    <section class="categories" id="categories">
-      <h2 id="school-name" style="text-align:center;"></h2>
-      <div class="category-item"><h3>Laptops</h3><p>Up to 20% off on select models</p></div>
-      <div class="category-item"><h3>Tablets</h3><p>Discounted for student use</p></div>
-      <div class="category-item"><h3>Smartphones</h3><p>Save up to $150</p></div>
-      <div class="category-item"><h3>Wearables</h3><p>Exclusive deals on smartwatches</p></div>
-    </section>
+      <section class="categories" id="categories">
+        <h2 id="school-name" style="text-align:center;"></h2>
+        <div class="category-item"><h3>Laptops</h3><p>Up to 20% off on select models</p></div>
+        <div class="category-item"><h3>Tablets</h3><p>Discounted for student use</p></div>
+        <div class="category-item"><h3>Smartphones</h3><p>Save up to $150</p></div>
+        <div class="category-item"><h3>Wearables</h3><p>Exclusive deals on smartwatches</p></div>
+      </section>
 
-    <div id="products" class="technology"></div>
+      <div id="products" class="technology"></div>
 
-    <div id="cart-modal" class="cartModal" style="display: none;">
-      <div class="cartModalContent">
-        <h2>Your Cart</h2>
-        <ul id="cart-items"></ul>
-        <button id="closeCartBtn" class="closeCartBtn">Close</button>
+      <div id="cart-modal" class="cartModal" style="display: none;">
+        <div class="cartModalContent">
+          <h2>Your Cart</h2>
+          <ul id="cart-items"></ul>
+          <button id="closeCartBtn" class="closeCartBtn">Close</button>
+        </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Scripts -->
-  <script src="./vendor/jquery/jquery-3.2.1.min.js"></script>
-  <script src="./vendor/bootstrap/js/popper.js"></script>
-  <script src="./vendor/bootstrap/js/bootstrap.min.js"></script>
-  <script src="./vendor/select2/select2.min.js"></script>
-  <script src="./vendor/tilt/tilt.jquery.min.js"></script>
-  <script>
-    $('.js-tilt').tilt({ scale: 1.1 });
-  </script>
-  <script type="module" src="./js/login.js"></script>
-  <script type="module" src="main.js"></script>
+      <!-- Footer Inside After-Login Container -->
+      <footer>
+        <div class="footerLeft">
+          <div class="footerMenu">
+            <h1 class="fMenuTitle">About us</h1>
+            <ul class="fList">
+              <li><a class="fListItem" href="https://www.bowiestate.edu/">BowieStateUniversity</a></li>
+              <li><a class="fListItem" href="not-ready.html">Contact</a></li>
+              <li><a class="fListItem" href="not-ready.html">Careers</a></li>
+              <li><a class="fListItem" href="not-ready.html">Affiliates</a></li>
+              <li><a class="fListItem" href="not-ready.html">Stores</a></li>
+            </ul>
+          </div>
+          <div class="footerMenu">
+            <h1 class="fMenuTitle">Useful Links</h1>
+            <ul class="fList">
+              <li><a class="fListItem" href="not-ready.html">Support</a></li>
+              <li><a class="fListItem" href="not-ready.html">Refund</a></li>
+              <li><a class="fListItem" href="not-ready.html">FAQ</a></li>
+              <li><a class="fListItem" href="not-ready.html">Feedback</a></li>
+              <li><a class="fListItem" href="not-ready.html">Stories</a></li>
+            </ul>
+          </div>
+          <div class="footerMenu">
+            <h1 class="fMenuTitle">Products</h1>
+            <ul class="fList">
+              <li><a class="fListItem" href="not-ready.html">Iphone</a></li>
+              <li><a class="fListItem" href="not-ready.html">Ipad</a></li>
+              <li><a class="fListItem" href="not-ready.html">Watch</a></li>
+              <li><a class="fListItem" href="not-ready.html">Macbook</a></li>
+              <li><a class="fListItem" href="not-ready.html">Surface</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footerRight">
+          <div class="footerRightMenu">
+            <h1 class="fMenuTitle">Subscribe to our newsletter</h1>
+            <div class="fMail">
+              <input type="text" placeholder="your@email.com" class="fInput" />
+              <button class="fButton">Join!</button>
+            </div>
+          </div>
+          <div class="footerRightMenu">
+            <h1 class="fMenuTitle">Follow Us</h1>
+            <div class="fIcons">
+              <img src="./img/facebook.png" alt="" class="fIcon" />
+              <img src="./img/instagram.png" alt="" class="fIcon" />
+              <img src="./img/whatsapp.png" alt="" class="fIcon" />
+            </div>
+          </div>
+          <div class="footerRightMenu">
+            <span class="copyright">@Bowie State University. All rights reserved. 2025.</span>
+          </div>
+        </div>
+      </footer>
+    </div>
 
-</body>
-<footer>
-  <div class="footerLeft">
-    <div class="footerMenu">
-      <h1 class="fMenuTitle">About us</h1>
-      <ul class="fList">
-        <li><a class="fListItem" href="https://www.bowiestate.edu/">BowieStateUniversity</a></li>
-        <li><a class="fListItem" href="not-ready.html">Contact</a></li>
-        <li><a class="fListItem" href="not-ready.html">Careers</a></li>
-        <li><a class="fListItem" href="not-ready.html">Affiliates</a></li>
-        <li><a class="fListItem" href="not-ready.html">Stores</a></li>
-      </ul>
-    </div>
-    <div class="footerMenu">
-      <h1 class="fMenuTitle">Useful Links</h1>
-      <ul class="fList">
-        <li><a class="fListItem" href="not-ready.html">Support</a></li>
-        <li><a class="fListItem" href="not-ready.html">Refund</a></li>
-        <li><a class="fListItem" href="not-ready.html">FAQ</a></li>
-        <li><a class="fListItem" href="not-ready.html">Feedback</a></li>
-        <li><a class="fListItem" href="not-ready.html">Stories</a></li>
-      </ul>
-    </div>
-    <div class="footerMenu">
-      <h1 class="fMenuTitle">Products</h1>
-      <ul class="fList">
-        <li><a class="fListItem" href="not-ready.html">Iphone</a></li>
-        <li><a class="fListItem" href="not-ready.html">Ipad</a></li>
-        <li><a class="fListItem" href="not-ready.html">Watch</a></li>
-        <li><a class="fListItem" href="not-ready.html">Macbook</a></li>
-        <li><a class="fListItem" href="not-ready.html">Surface</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footerRight">
-    <div class="footerRightMenu">
-      <h1 class="fMenuTitle">Subscribe to our newsletter</h1>
-      <div class="fMail">
-        <input type="text" placeholder="your@email.com" class="fInput" />
-        <button class="fButton">Join!</button>
-      </div>
-    </div>
-    <div class="footerRightMenu">
-      <h1 class="fMenuTitle">Follow Us</h1>
-      <div class="fIcons">
-        <img src="./img/facebook.png" alt="" class="fIcon" />
-        <img src="./img/instagram.png" alt="" class="fIcon" />
-        <img src="./img/whatsapp.png" alt="" class="fIcon" />
-      </div>
-    </div>
-    <div class="footerRightMenu">
-      <span class="copyright">@Bowie State University. All rights reserved. 2025.</span>
-    </div>
-  </div>
-</footer>
+    <!-- Scripts -->
+    <script src="./vendor/jquery/jquery-3.2.1.min.js"></script>
+    <script src="./vendor/bootstrap/js/popper.js"></script>
+    <script src="./vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="./vendor/select2/select2.min.js"></script>
+    <script src="./vendor/tilt/tilt.jquery.min.js"></script>
+    <script>
+      $('.js-tilt').tilt({ scale: 1.1 });
+    </script>
+    <script type="module" src="./js/login.js"></script>
+    <script type="module" src="main.js"></script>
+  </body>
 </html>
