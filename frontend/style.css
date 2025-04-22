@@ -20,6 +20,16 @@ nav {
   justify-content: space-between;
 }
 
+.school-logo {
+  height: 150px;
+  object-fit: contain;
+  display: block;
+  margin-top: -40px;   /* pull it upward */
+  margin-bottom: -80px; /* reduces space below */
+}
+
+
+
 .search {
   display: flex;
   align-items: center;
