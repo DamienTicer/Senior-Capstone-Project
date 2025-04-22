@@ -42,3 +42,4 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       .catch(error => console.error('Error fetching products:', error));
   });
+  

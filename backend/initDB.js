@@ -2,7 +2,7 @@ const mysql = require('mysql2'); //loading Mysql library
 const connection = mysql.createConnection({  //setting up connection details with database
   host: 'localhost',
   user: 'root',
-  password: 'Password1234', // update if needed
+  password: '1234', // update if needed
   database: 'bowie_tech_discount'
 });
 
