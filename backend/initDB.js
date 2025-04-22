@@ -6,7 +6,7 @@ const mysql = require('mysql2'); // Load MySQL library
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'Saolaithe00@',
+  password: 'Password1234', // Change if your MySQL password is different
   database: 'bowie_tech_discount'
 });
 
@@ -44,25 +44,25 @@ connection.connect(err => {
     if (err) throw err;
     console.log("🛠️ Products table ready");
 
+    // Delete old mock products and insert new ones
     const deleteQuery = `DELETE FROM products`;
     const insertMockProducts = `
       INSERT INTO products (name, price, discount_price, image_url) VALUES
-      ('MacBook Air 2024', 1199.99, 999.99, 'MacbookAir2024_2.jpg'),
-      ('Microsoft Surface 2024', 1399.99, 1199.99, 'MicrosoftSurface2024_2.jpg'),
-      ('iPhone 16 Pro Max', 1099.99, 949.99, 'iPhone16Promax2.jpg'),
-      ('iPad 10th Gen', 449.99, 379.99, 'iPad10thGen2.jpg'),
-      ('Apple Watch Series 10', 499.99, 429.99, 'AppleWatchSeries10_2.jpg');
+      ('MacBook Air 2024', 1199.99, 999.99, 'img/MacbookAir2024_2.jpg'),
+      ('Microsoft Surface 2024', 1399.99, 1199.99, 'img/MicrosoftSurface2024_2.jpg'),
+      ('iPhone 16 Pro Max', 1099.99, 949.99, 'img/iPhone16Promax2.jpg'),
+      ('iPad 10th Gen', 449.99, 379.99, 'img/iPad10thGen2.jpg'),
+      ('Apple Watch Series 10', 499.99, 429.99, 'img/AppleWatchSeries10_2.jpg');
     `;
 
     connection.query(deleteQuery, err => {
       if (err) throw err;
       connection.query(insertMockProducts, err => {
         if (err) throw err;
-        console.log("Mock products inserted successfully!");
+        console.log("📦 Mock products inserted");
       });
     });
   });
 });
 
 module.exports = connection;
-

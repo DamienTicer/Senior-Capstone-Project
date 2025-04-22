@@ -1,23 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Bowie State Login</title>
   <link rel="icon" href="./images/favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" type="text/css" href="./vendor/bootstrap/css/bootstrap.min.css">
-  <link rel="stylesheet" type="text/css" href="./fonts/font-awesome-4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" type="text/css" href="./fonts/iconic/css/material-design-iconic-font.min.css">
-  <link rel="stylesheet" type="text/css" href="./vendor/animate/animate.css">
-  <link rel="stylesheet" type="text/css" href="./vendor/css-hamburgers/hamburgers.min.css">
-  <link rel="stylesheet" type="text/css" href="./vendor/animsition/css/animsition.min.css">
-  <link rel="stylesheet" type="text/css" href="./vendor/select2/select2.min.css">
-  <link rel="stylesheet" type="text/css" href="./vendor/daterangepicker/daterangepicker.css">
-  <link rel="stylesheet" type="text/css" href="./css/util.css">
-  <link rel="stylesheet" type="text/css" href="./css/main.css">
+  <link rel="stylesheet" href="./vendor/bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="./fonts/iconic/css/material-design-iconic-font.min.css">
+  <link rel="stylesheet" href="./vendor/animate/animate.css">
+  <link rel="stylesheet" href="./vendor/css-hamburgers/hamburgers.min.css">
+  <link rel="stylesheet" href="./vendor/animsition/css/animsition.min.css">
+  <link rel="stylesheet" href="./vendor/select2/select2.min.css">
+  <link rel="stylesheet" href="./vendor/daterangepicker/daterangepicker.css">
+  <link rel="stylesheet" href="./css/util.css">
+  <link rel="stylesheet" href="./css/main.css">
 </head>
 <body>
-  <div class="limiter">
+
+  <div class="limiter" id="login-section">
     <div class="container-login100" style="background-image: url('./images/bg-01.jpg');">
       <div class="wrap-login100">
         <div class="login100-pic js-tilt" data-tilt>
@@ -60,12 +61,8 @@
           </div>
 
           <div class="text-center p-t-12">
-            <span class="txt1">
-              Forgot
-            </span>
-            <a class="txt2" href="#">
-              Username / Password?
-            </a>
+            <span class="txt1">Forgot </span>
+            <a class="txt2" href="#">Username / Password?</a>
           </div>
 
           <div class="text-center p-t-136" id="toggleModeText">
@@ -79,6 +76,53 @@
     </div>
   </div>
 
+  <div id="after-login" style="display: none;">
+    <nav id="nav">
+      <div class="navTop">
+        <div class="navItem"><img id="school-logo" alt="School Logo" /></div>
+        <div class="navItem">
+          <div class="search">
+            <input type="text" placeholder="Search..." class="searchInput" />
+            <img src="./img/search.png" width="20" height="20" alt="" class="searchIcon" />
+          </div>
+          <div class="navItem">
+            <button id="cartBtn" class="cartButton">🛒 Cart (<span id="cart-count">0</span>)</button>
+          </div>          
+        </div>
+        <div class="navItem navOfferLogout">
+          <span class="limitedOffer">Limited Offer!</span>
+          <button id="logoutBtn" class="logoutButton">Logout</button>
+        </div>        
+      </div>
+      <div class="navBottom">
+        <a href="not-ready.html" class="menuItem">IPHONE</a>
+        <a href="not-ready.html" class="menuItem">IPAD</a>
+        <a href="not-ready.html" class="menuItem">APPLE WATCH</a>
+        <a href="not-ready.html" class="menuItem">MACBOOK</a>
+        <a href="not-ready.html" class="menuItem">SURFACE</a>
+      </div>
+    </nav>
+
+    <section class="categories" id="categories">
+      <h2 id="school-name" style="text-align:center;"></h2>
+      <div class="category-item"><h3>Laptops</h3><p>Up to 20% off on select models</p></div>
+      <div class="category-item"><h3>Tablets</h3><p>Discounted for student use</p></div>
+      <div class="category-item"><h3>Smartphones</h3><p>Save up to $150</p></div>
+      <div class="category-item"><h3>Wearables</h3><p>Exclusive deals on smartwatches</p></div>
+    </section>
+
+    <div id="products" class="technology"></div>
+
+    <div id="cart-modal" class="cartModal" style="display: none;">
+      <div class="cartModalContent">
+        <h2>Your Cart</h2>
+        <ul id="cart-items"></ul>
+        <button id="closeCartBtn" class="closeCartBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
   <script src="./vendor/jquery/jquery-3.2.1.min.js"></script>
   <script src="./vendor/bootstrap/js/popper.js"></script>
   <script src="./vendor/bootstrap/js/bootstrap.min.js"></script>
@@ -87,6 +131,8 @@
   <script>
     $('.js-tilt').tilt({ scale: 1.1 });
   </script>
-  <script src="./js/login.js" type="module"></script>
+  <script type="module" src="./js/login.js"></script>
+  <script type="module" src="main.js"></script>
+
 </body>
 </html>
