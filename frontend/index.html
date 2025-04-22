@@ -25,6 +25,9 @@
             <input type="text" placeholder="Search..." class="searchInput" />
             <img src="./img/search.png" width="20" height="20" alt="" class="searchIcon" />
           </div>
+          <div class="navItem">
+            <button id="cartBtn" class="cartButton">🛒 Cart (<span id="cart-count">0</span>)</button>
+          </div>          
         </div>
         <div class="navItem navOfferLogout">
           <span class="limitedOffer">Limited Offer!</span>
@@ -119,6 +122,13 @@
   </div>
 
   <script type="module" src="main.js"></script>
+  <div id="cart-modal" class="cartModal" style="display: none;">
+    <div class="cartModalContent">
+      <h2>Your Cart</h2>
+      <ul id="cart-items"></ul>
+      <button id="closeCartBtn" class="closeCartBtn">Close</button>
+    </div>
+  </div>  
 </body>
 
 </html>

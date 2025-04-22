@@ -276,4 +276,61 @@ footer {
     width: 100%;
     padding: 20px;
   }
+
+  .cartButton {
+    background-color: orange;
+    color: black;
+    padding: 6px 14px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .cartModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .cartModalContent {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+  
+  .closeCartBtn {
+    background-color: crimson;
+    color: white;
+    padding: 8px;
+    margin-top: 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .removeBtn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 2px 8px;
+    font-size: 12px;
+    margin-left: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .removeBtn:hover {
+    background-color: #b02a37;
+  }  
 }
