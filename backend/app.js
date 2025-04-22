@@ -2,17 +2,18 @@
 
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const app = express();
 const connection = require('./initDB');
-const externalProductsRoute = require('./routes/external-products');
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Optional route for future integration
-app.use(externalProductsRoute);
+// Serve static images from frontend/img
+app.use('/img', express.static(path.join(__dirname, '../frontend/img')));
 
-// Explicitly verify database connection before handling requests
+// Verify database connection
 connection.connect(err => {
   if (err) {
     console.error('❗️ Database connection failed:', err.stack);
@@ -23,12 +24,16 @@ connection.connect(err => {
 
 // ====================== ROUTES ========================= //
 
-// Root/Home
+// Home/Health Check
 app.get('/', (req, res) => {
   res.send('Bowie Tech Discount API is running...');
 });
 
-// POST /login
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'Server is running fine!' });
+});
+
+// ================== LOGIN ==================
 app.post('/login', (req, res) => {
   const { email } = req.body;
 
@@ -75,7 +80,7 @@ app.post('/login', (req, res) => {
   });
 });
 
-// GET /api/profile/:email
+// ================== PROFILE ==================
 app.get('/api/profile/:email', (req, res) => {
   const { email } = req.params;
   const query = `SELECT * FROM users WHERE email = ?`;
@@ -94,7 +99,7 @@ app.get('/api/profile/:email', (req, res) => {
   });
 });
 
-// GET /products
+// ================== PRODUCTS ==================
 app.get('/products', (req, res) => {
   const query = `SELECT * FROM products`;
   connection.query(query, (err, results) => {
@@ -102,18 +107,19 @@ app.get('/products', (req, res) => {
       console.error('❗️ Error fetching products:', err);
       return res.status(500).json({ message: 'Failed to fetch products' });
     }
-    res.json(results);
+
+    const productsWithFallback = results.map(product => ({
+      ...product,
+      image_url: product.image_url && product.image_url.trim() !== ''
+        ? product.image_url
+        : 'default.jpg'
+    }));
+
+    res.json(productsWithFallback);
   });
 });
 
-// Health check
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'Server is running fine!' });
-});
-
-// ====================================================== //
-
-// Start server
+// ================== START SERVER ==================
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);

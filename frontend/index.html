@@ -19,25 +19,29 @@
   <div id="after-login" style="display: none">
     <nav id="nav">
       <div class="navTop">
-        <div class="navItem"><img src="./img/Icon.PNG" alt="Bowie State Logo" /></div>
+        <div class="navItem"><img id="school-logo" alt="School Logo" /></div>
         <div class="navItem">
           <div class="search">
             <input type="text" placeholder="Search..." class="searchInput" />
             <img src="./img/search.png" width="20" height="20" alt="" class="searchIcon" />
           </div>
         </div>
-        <div class="navItem"><span class="limitedOffer">Limited Offer!</span></div>
+        <div class="navItem navOfferLogout">
+          <span class="limitedOffer">Limited Offer!</span>
+          <button id="logoutBtn" class="logoutButton">Logout</button>
+        </div>        
       </div>
       <div class="navBottom">
-        <h3 class="menuItem">IPHONE</h3>
-        <h3 class="menuItem">IPAD</h3>
-        <h3 class="menuItem">APPLE WATCH</h3>
-        <h3 class="menuItem">MACBOOK</h3>
-        <h3 class="menuItem">SURFACE</h3>
+        <a href="not-ready.html" class="menuItem">IPHONE</a>
+        <a href="not-ready.html" class="menuItem">IPAD</a>
+        <a href="not-ready.html" class="menuItem">APPLE WATCH</a>
+        <a href="not-ready.html" class="menuItem">MACBOOK</a>
+        <a href="not-ready.html" class="menuItem">SURFACE</a>
       </div>
     </nav>
 
-    <section class="categories">
+    <section class="categories" id="categories">
+      <h2 id="school-name" style="text-align:center;"></h2>
       <div class="category-item">
         <h3>Laptops</h3>
         <p>Up to 20% off on select models</p>
@@ -63,31 +67,31 @@
         <div class="footerMenu">
           <h1 class="fMenuTitle">About us</h1>
           <ul class="fList">
-            <li class="fListItem">BowieStateUniversity</li>
-            <li class="fListItem">Contact</li>
-            <li class="fListItem">Careers</li>
-            <li class="fListItem">Affiliates</li>
-            <li class="fListItem">Stores</li>
+            <li><a class="fListItem" href="https://www.bowiestate.edu/">BowieStateUniversity</a></li>
+            <li><a class="fListItem" href="not-ready.html">Contact</a></li>
+            <li><a class="fListItem" href="not-ready.html">Careers</a></li>
+            <li><a class="fListItem" href="not-ready.html">Affiliates</a></li>
+            <li><a class="fListItem" href="not-ready.html">Stores</a></li>
           </ul>
         </div>
         <div class="footerMenu">
           <h1 class="fMenuTitle">Useful Links</h1>
           <ul class="fList">
-            <li class="fListItem">Support</li>
-            <li class="fListItem">Refund</li>
-            <li class="fListItem">FAQ</li>
-            <li class="fListItem">Feedback</li>
-            <li class="fListItem">Stories</li>
+            <li><a class="fListItem" href="not-ready.html">Support</a></li>
+            <li><a class="fListItem" href="not-ready.html">Refund</a></li>
+            <li><a class="fListItem" href="not-ready.html">FAQ</a></li>
+            <li><a class="fListItem" href="not-ready.html">Feedback</a></li>
+            <li><a class="fListItem" href="not-ready.html">Stories</a></li>
           </ul>
         </div>
         <div class="footerMenu">
           <h1 class="fMenuTitle">Products</h1>
           <ul class="fList">
-            <li class="fListItem">Iphone</li>
-            <li class="fListItem">Ipad</li>
-            <li class="fListItem">Watch</li>
-            <li class="fListItem">Macbook</li>
-            <li class="fListItem">Surface</li>
+            <li><a class="fListItem" href="not-ready.html">Iphone</a></li>
+            <li><a class="fListItem" href="not-ready.html">Ipad</a></li>
+            <li><a class="fListItem" href="not-ready.html">Watch</a></li>
+            <li><a class="fListItem" href="not-ready.html">Macbook</a></li>
+            <li><a class="fListItem" href="not-ready.html">Surface</a></li>
           </ul>
         </div>
       </div>
@@ -114,67 +118,7 @@
     </footer>
   </div>
 
-  <script>
-    async function login() {
-      const email = document.getElementById('email').value;
-      if (!email) {
-        alert('Please enter your email');
-        return;
-      }
-
-      try {
-        const res = await fetch('http://localhost:3000/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email })
-        });
-        const data = await res.json();
-
-        if (data.message) {
-          alert(data.message);
-        } else if (data.error) {
-          alert(data.error);
-        }
-
-        if (res.status === 200) {
-          document.getElementById('login-section').style.display = 'none';
-          document.getElementById('after-login').style.display = 'block';
-          loadProducts();
-        }
-      } catch (err) {
-        alert('Error connecting to server');
-        console.error(err);
-      }
-    }
-
-    async function loadProducts() {
-      try {
-        const res = await fetch('http://localhost:3000/products');
-        const products = await res.json();
-
-        const container = document.getElementById('products');
-        container.innerHTML = '';
-
-        products.forEach(product => {
-          const card = document.createElement('div');
-          card.className = 'deviceItem';
-          card.innerHTML = `
-            <img src="${product.image_url}" alt="${product.name}" class="product-image">
-            <div class="sliderBg"></div>
-            <h1 class="sliderTitle">${product.name}</h1>
-            <h2 class="sliderPrice">$${product.discount_price}</h2>
-            <a href="#product">
-              <button class="buyButton">BUY NOW!</button>
-            </a>
-          `;
-          container.appendChild(card);
-        });
-      } catch (err) {
-        alert('Failed to load products');
-        console.error(err);
-      }
-    }
-  </script>
+  <script type="module" src="main.js"></script>
 </body>
 
 </html>
