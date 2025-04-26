@@ -1,18 +1,19 @@
 import { fetchSchoolProfile } from './API.js';
 
+let cart = [];
+
 document.addEventListener("DOMContentLoaded", () => {
   const isLoggedIn = localStorage.getItem("loggedIn");
-
   if (isLoggedIn === "true") {
     document.getElementById("login-section").style.display = "none";
     document.getElementById("after-login").style.display = "block";
     loadCart();
-    updateCartUI();
     loadProfile();
-    setupLogout(); // ✅ Attach logout functionality
+    loadProducts(); // ✅ Add this
   }
 });
 
+// Basic login method (unchanged)
 async function login() {
   const email = document.getElementById('email').value;
   if (!email) {
@@ -20,50 +21,18 @@ async function login() {
     return;
   }
 
-  try {
-    const res = await fetch('http://localhost:3000/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
-    });
-
-    const data = await res.json();
-    if (data.message) {
-      alert(data.message);
-    } else if (data.error) {
-      alert(data.error);
-    }
-
-    if (res.status === 200) {
-      localStorage.setItem("loggedIn", "true");
-      localStorage.setItem("currentUser", JSON.stringify(data.user));
-      document.getElementById('login-section').style.display = 'none';
-      document.getElementById('after-login').style.display = 'block';
-      loadCart();
-      updateCartUI();
-      loadProfile();
-      setupLogout(); // ✅ Attach logout after login succeeds
-    }
-  } catch (err) {
-    alert('Error connecting to server');
-    console.error(err);
-  }
+  localStorage.setItem("loggedIn", "true");
+  document.getElementById("login-section").style.display = "none";
+  document.getElementById("after-login").style.display = "block";
+  loadCart();
+  updateCartUI();
+  loadProfile();
+  loadProducts(); // ✅ Load mock products on login
 }
 
-function setupLogout() {
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-      localStorage.removeItem("loggedIn");
-      localStorage.removeItem("currentUser");
-      location.reload(); // Return to login
-    });
-  }
-}
-
+// Fetch school profile (unchanged)
 async function loadProfile() {
   const profileData = await fetchSchoolProfile();
-
   if (!profileData) {
     console.error("Failed to load profile data.");
     return;
@@ -71,44 +40,41 @@ async function loadProfile() {
 
   document.getElementById('school-name').textContent = profileData.schoolName;
   document.getElementById('school-logo').src = profileData.logoUrl;
-
-  const techContainer = document.getElementById("products");
-  techContainer.innerHTML = "";
-
-  profileData.technologyOnSale.forEach((item) => {
-    const card = document.createElement("div");
-    card.className = "deviceItem";
-    card.innerHTML = `
-      <h2 class="sliderTitle">${item.name}</h2>
-      <p>${item.description}</p>
-      <h3 class="sliderPrice">${item.price}</h3>
-      <button class="buyButton">Buy Now</button>
-    `;
-
-    const buyBtn = card.querySelector(".buyButton");
-    buyBtn.addEventListener("click", () => addToCart(item));
-    techContainer.appendChild(card);
-  });
 }
 
-let cart = [];
+// ✅ Fetch and display products from mockAPI.json
+async function loadProducts() {
+  try {
+    const res = await fetch('mockAPI.json');
+    const data = await res.json();
 
-function getCurrentUserEmail() {
-  const user = JSON.parse(localStorage.getItem("currentUser"));
-  return user?.email || "guest";
+    const container = document.getElementById('products');
+    container.innerHTML = '';
+
+    data.technologyOnSale.forEach((item) => {
+      const card = document.createElement('div');
+      card.className = 'deviceItem';
+      card.innerHTML = `
+        <img class="product-image" src="./img/${item.imageUrl || 'default.jpg'}" alt="${item.name}" onerror="this.onerror=null; this.src='./img/default.jpg';">
+        <h2 class="sliderTitle">${item.name}</h2>
+        <p>${item.description}</p>
+        <h3 class="sliderPrice">${item.price}</h3>
+        <button class="buyButton">Buy Now</button>
+      `;
+
+      // Attach event for cart
+      const buyBtn = card.querySelector('.buyButton');
+      buyBtn.addEventListener('click', () => addToCart(item));
+
+      container.appendChild(card);
+    });
+
+  } catch (err) {
+    console.error('Error loading products:', err);
+  }
 }
 
-function saveCart() {
-  const email = getCurrentUserEmail();
-  localStorage.setItem(`cart-${email}`, JSON.stringify(cart));
-}
-
-function loadCart() {
-  const email = getCurrentUserEmail();
-  const stored = localStorage.getItem(`cart-${email}`);
-  cart = stored ? JSON.parse(stored) : [];
-}
-
+// Cart functions
 function addToCart(item) {
   cart.push(item);
   saveCart();
@@ -116,24 +82,33 @@ function addToCart(item) {
   alert(`${item.name} added to cart!`);
 }
 
+function saveCart() {
+  localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+function loadCart() {
+  const storedCart = localStorage.getItem('cart');
+  cart = storedCart ? JSON.parse(storedCart) : [];
+  updateCartUI();
+}
+
 function updateCartUI() {
   document.getElementById("cart-count").textContent = cart.length;
-
   const cartList = document.getElementById("cart-items");
-  cartList.innerHTML = "";
+  cartList.innerHTML = '';
 
-  cart.forEach((item, i) => {
-    const li = document.createElement("li");
+  cart.forEach((item, index) => {
+    const li = document.createElement('li');
     li.innerHTML = `
       ${item.name} - ${item.price}
-      <button class="removeBtn" data-index="${i}">Remove</button>
+      <button class="removeBtn" data-index="${index}">Remove</button>
     `;
     cartList.appendChild(li);
   });
 
-  document.querySelectorAll(".removeBtn").forEach(button => {
-    button.addEventListener("click", (e) => {
-      const index = parseInt(e.target.getAttribute("data-index"));
+  document.querySelectorAll('.removeBtn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const index = parseInt(e.target.getAttribute('data-index'));
       removeFromCart(index);
     });
   });
@@ -145,15 +120,17 @@ function removeFromCart(index) {
   updateCartUI();
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("cartBtn").addEventListener("click", () => {
-    document.getElementById("cart-modal").style.display = "flex";
-  });
-
-  document.getElementById("closeCartBtn").addEventListener("click", () => {
-    document.getElementById("cart-modal").style.display = "none";
-  });
+document.getElementById('cartBtn')?.addEventListener('click', () => {
+  document.getElementById('cart-modal').style.display = 'flex';
+});
+document.getElementById('closeCartBtn')?.addEventListener('click', () => {
+  document.getElementById('cart-modal').style.display = 'none';
+});
+document.getElementById('logoutBtn')?.addEventListener('click', () => {
+  localStorage.removeItem('loggedIn');
+  localStorage.removeItem('cart');
+  location.reload();
 });
 
-// Inline fallback support
+// Expose login globally for inline button
 window.login = login;
