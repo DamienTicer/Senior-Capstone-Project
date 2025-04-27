@@ -22,12 +22,14 @@
 
 <body>
 
-<!-- Simple Login Section -->
-<div id="login-section">
-  <h1 style="text-align:center; margin-top: 20px;">🎓 Bowie State Tech Discounts 🎓</h1>
-  <div style="display: flex; flex-direction: column; align-items: center; margin-top: 30px;">
-    <input type="email" id="email" placeholder="Enter your Bowie student email" required style="padding: 10px; width: 300px; margin-bottom: 10px;"/>
-    <button onclick="login()" class="login100-form-btn" style="padding: 10px 20px; background-color: black; color: white; border: none; border-radius: 5px;">Login</button>
+<!-- New Login Card Section -->
+<div id="login-section" class="loginContainer">
+  <div class="loginCard">
+    <div class="loginLogo">🎓</div>
+    <div class="loginHeading">Bowie State Tech Discounts</div>
+    <div class="loginSubheading">Sign in with your Bowie State student email</div>
+    <input type="email" id="email" class="loginInput" placeholder="Enter your Bowie student email" required />
+    <button onclick="login()" class="loginButton">Login</button>
   </div>
 </div>
 

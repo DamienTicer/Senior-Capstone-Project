@@ -366,6 +366,13 @@ footer {
   text-align: center;
 }
 
+/* 🔵 ADD THIS to ensure consistent width */
+.loginCard input,
+.loginCard button {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .loginLogo {
   font-size: 48px;
   margin-bottom: 16px;
@@ -384,7 +391,6 @@ footer {
 }
 
 .loginInput {
-  width: 100%;
   padding: 12px 16px;
   margin-bottom: 16px;
   font-size: 16px;
@@ -399,7 +405,6 @@ footer {
 }
 
 .loginButton {
-  width: 100%;
   padding: 12px 16px;
   background-color: #4a90e2;
   color: white;
