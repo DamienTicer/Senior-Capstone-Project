@@ -55,9 +55,11 @@ async function handleLoginOrRegister(email, password, confirmPassword) {
     if (response.ok && result.user) {
       localStorage.setItem('loggedIn', 'true');
       localStorage.setItem('userEmail', email);
-      setTimeout(() => {
-        window.location.href = '/products';
-      }, 100);
+
+      document.querySelector('.limiter').style.display = 'none';
+      const afterLogin = document.getElementById('after-login');
+      if (afterLogin) afterLogin.style.display = 'block';
+      loadProducts();
     } else {
       alert(result.message || 'Operation failed');
     }
@@ -68,6 +70,29 @@ async function handleLoginOrRegister(email, password, confirmPassword) {
     submitting = false;
     btn.disabled = false;
     btn.textContent = isRegisterMode ? 'Register' : 'Login';
+  }
+}
+
+async function loadProducts() {
+  try {
+    const res = await fetch('http://localhost:3000/products');
+    const products = await res.json();
+    const container = document.getElementById('products');
+    container.innerHTML = '';
+    products.forEach(product => {
+      const item = document.createElement('div');
+      item.className = 'deviceItem';
+      item.innerHTML = `
+        <img src="${product.image_url}" class="product-image" alt="${product.name}" />
+        <h2 class="sliderTitle">${product.name}</h2>
+        <p>Original: $${product.price}</p>
+        <h3 class="sliderPrice">Now: $${product.discount_price}</h3>
+        <button class="buyButton">Buy Now</button>
+      `;
+      container.appendChild(item);
+    });
+  } catch (err) {
+    console.error('❗️ Failed to load products:', err);
   }
 }
 
