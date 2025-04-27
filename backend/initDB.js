@@ -1,26 +1,23 @@
 // backend/initDB.js
 
-const mysql = require('mysql2'); // Load MySQL library
+const mysql = require('mysql2');
 
-// Create a connection to the MySQL database
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'Password1234', // Change if your MySQL password is different
+  password: 'Password1234',
   database: 'bowie_tech_discount'
 });
 
-// Connect to MySQL and initialize tables
 connection.connect(err => {
   if (err) throw err;
   console.log("✅ Connected to MySQL");
 
-  // Create Users table if it doesn't exist
   const createUsersTable = `
     CREATE TABLE IF NOT EXISTS users (
       id INT AUTO_INCREMENT PRIMARY KEY,
       email VARCHAR(255) UNIQUE NOT NULL,
-      password VARCHAR(255) NOT NULL,
+      password VARCHAR(255),
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     );
@@ -30,7 +27,6 @@ connection.connect(err => {
     console.log("🛠️ Users table ready");
   });
 
-  // Create Products table if it doesn't exist
   const createProductsTable = `
     CREATE TABLE IF NOT EXISTS products (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -44,7 +40,6 @@ connection.connect(err => {
     if (err) throw err;
     console.log("🛠️ Products table ready");
 
-    // Delete old mock products and insert new ones
     const deleteQuery = `DELETE FROM products`;
     const insertMockProducts = `
       INSERT INTO products (name, price, discount_price, image_url) VALUES

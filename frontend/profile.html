@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Profile - Bowie Tech Discounts</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="loginContainer">
+  <div class="loginCard">
+    <h2 class="loginHeading">👤 My Profile</h2>
+
+    <div class="infoBox">
+      <p><strong>Email:</strong> <span id="profile-email">Loading...</span></p>
+      <p><strong>Member Since:</strong> <span id="profile-created">Loading...</span></p>
+      <div class="profileButtons">
+        <button id="homeBtn" class="profileButton">🏠 Home</button>
+        <button id="logoutBtn" class="profileButton">🚪 Logout</button>
+        <button id="deleteProfileBtn" class="profileButton deleteBtn">🗑️ Delete Profile</button>
+      </div>      
+</div>
+
+<script type="module">
+  async function loadProfile() {
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (!user || !user.email) {
+      alert('No active session. Redirecting...');
+      window.location.href = './index.html';
+      return;
+    }
+
+    document.getElementById('profile-email').textContent = user.email;
+    document.getElementById('profile-created').textContent = new Date(user.created_at).toLocaleString();
+  }
+
+  function logout() {
+    localStorage.removeItem('loggedIn');
+    localStorage.removeItem('currentUser');
+    window.location.href = './index.html';
+  }
+
+  async function deleteProfile() {
+    const confirmation = confirm('⚠️ Are you sure you want to permanently delete your profile? This cannot be undone.');
+
+    if (!confirmation) return;
+
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (!user || !user.email) {
+      alert('No active session.');
+      return;
+    }
+
+    try {
+      const res = await fetch(`http://localhost:3000/api/deleteProfile/${encodeURIComponent(user.email)}`, {
+        method: 'DELETE',
+      });
+
+      const data = await res.json();
+
+      if (res.status === 200) {
+        alert('✅ Profile deleted successfully.');
+        localStorage.removeItem('loggedIn');
+        localStorage.removeItem('currentUser');
+        window.location.href = './index.html';
+      } else {
+        alert(data.message || 'Failed to delete profile.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error connecting to server.');
+    }
+  }
+
+  loadProfile();
+</script>
+<script type="module">
+    document.getElementById('homeBtn').addEventListener('click', () => {
+      window.location.href = 'index.html'; // ✅ Go back to home page
+    });
+    
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('loggedIn');
+      localStorage.removeItem('currentUser');
+      window.location.href = 'index.html'; // ✅ Also redirect to home after logout
+    });
+    
+    document.getElementById('deleteProfileBtn').addEventListener('click', async () => {
+      const user = JSON.parse(localStorage.getItem('currentUser'));
+    
+      if (!user?.email) {
+        alert('No user logged in.');
+        return;
+      }
+    
+      if (!window.confirm('Are you sure you want to delete your profile? This cannot be undone.')) {
+        return;
+      }
+    
+      try {
+        const res = await fetch(`http://localhost:3000/api/deleteProfile/${user.email}`, {
+          method: 'DELETE'
+        });
+    
+        const data = await res.json();
+    
+        if (res.status === 200) {
+          alert('Profile deleted successfully!');
+          localStorage.removeItem('loggedIn');
+          localStorage.removeItem('currentUser');
+          window.location.href = 'index.html'; // ✅ Redirect after delete
+        } else {
+          alert(data.message || 'Failed to delete profile.');
+        }
+      } catch (err) {
+        console.error('Error deleting profile:', err);
+        alert('Server error.');
+      }
+    });
+    </script>
+    
+</body>
+</html>

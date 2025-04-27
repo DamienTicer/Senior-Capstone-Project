@@ -1,3 +1,4 @@
+/* ----------------- GLOBAL STYLES ----------------- */
 html {
   scroll-behavior: smooth;
 }
@@ -24,11 +25,9 @@ nav {
   height: 150px;
   object-fit: contain;
   display: block;
-  margin-top: -40px;   /* pull it upward */
-  margin-bottom: -80px; /* reduces space below */
+  margin-top: -40px;
+  margin-bottom: -80px;
 }
-
-
 
 .search {
   display: flex;
@@ -206,6 +205,90 @@ footer {
   background-color: darkred;
 }
 
+.deleteButton {
+  margin-top: 10px;
+  width: 100%;
+  padding: 12px 16px;
+  background-color: darkred;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.deleteButton:hover {
+  background-color: crimson;
+}
+
+.profileButton {
+  padding: 6px 12px;
+  font-size: 14px;
+  background-color: royalblue;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-bottom: 5px;
+}
+
+.profileButton:hover {
+  background-color: darkblue;
+}
+
+.profileContainer {
+  padding: 40px;
+  max-width: 600px;
+  margin: 50px auto;
+  background-color: #f8f9fa;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.profileTitle {
+  font-size: 32px;
+  margin-bottom: 20px;
+}
+
+.profileInfoBox {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.profileButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.profileButton {
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.profileButton:hover {
+  background-color: #0056b3;
+}
+
+.deleteBtn {
+  background-color: crimson;
+}
+
+.deleteBtn:hover {
+  background-color: darkred;
+}
+
 .categories {
   display: flex;
   justify-content: space-around;
@@ -296,7 +379,7 @@ footer {
     font-weight: bold;
     cursor: pointer;
   }
-  
+
   .cartModal {
     position: fixed;
     top: 0;
@@ -309,7 +392,7 @@ footer {
     justify-content: center;
     z-index: 1000;
   }
-  
+
   .cartModalContent {
     background-color: white;
     padding: 20px;
@@ -318,7 +401,7 @@ footer {
     max-height: 400px;
     overflow-y: auto;
   }
-  
+
   .closeCartBtn {
     background-color: crimson;
     color: white;
@@ -328,7 +411,7 @@ footer {
     border-radius: 4px;
     cursor: pointer;
   }
-  
+
   .removeBtn {
     background-color: #dc3545;
     color: white;
@@ -339,8 +422,84 @@ footer {
     border-radius: 4px;
     cursor: pointer;
   }
-  
+
   .removeBtn:hover {
     background-color: #b02a37;
   }  
+}
+
+/* ========== LOGIN PAGE ========== */
+
+.loginContainer {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #eef2f8;
+  padding: 20px;
+  font-family: "Lato", sans-serif;
+}
+
+.loginCard {
+  background: white;
+  padding: 40px 32px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+}
+
+/* 🔵 ADD THIS to ensure consistent width */
+.loginCard input,
+.loginCard button {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.loginLogo {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.loginHeading {
+  font-size: 24px;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.loginSubheading {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 24px;
+}
+
+.loginInput {
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+  outline: none;
+}
+
+.loginInput:focus {
+  border-color: #4a90e2;
+}
+
+.loginButton {
+  padding: 12px 16px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.loginButton:hover {
+  background-color: #3b7bdc;
 }
