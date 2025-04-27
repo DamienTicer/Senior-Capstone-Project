@@ -168,6 +168,30 @@ app.get('/products', (req, res) => {
   });
 });
 
+// ================== DELETE PROFILE ==================
+app.delete('/api/deleteProfile/:email', (req, res) => {
+  const { email } = req.params;
+
+  if (!email) {
+    return res.status(400).json({ message: 'Email is required.' });
+  }
+
+  const deleteUserQuery = `DELETE FROM users WHERE email = ?`;
+  connection.query(deleteUserQuery, [email], (err, result) => {
+    if (err) {
+      console.error('❗️ Error deleting user:', err);
+      return res.status(500).json({ message: 'Database error' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    console.log(`✅ Deleted user: ${email}`);
+    res.json({ message: 'Profile deleted successfully.' });
+  });
+});
+
 // ================== START SERVER ==================
 const PORT = 3000;
 app.listen(PORT, () => {

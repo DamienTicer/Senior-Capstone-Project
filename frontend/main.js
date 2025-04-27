@@ -1,4 +1,4 @@
-import { fetchSchoolProfile } from './API.js';
+// main.js
 
 let cart = [];
 
@@ -15,9 +15,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Basic login method (unchanged)
 async function login() {
+
   const email = document.getElementById('email').value;
-  if (!email) {
-    alert('Please enter your email');
+
+  if (!email || !email.endsWith('@students.bowiestate.edu')) {
+    alert('Please enter a valid Bowie State student email');
     return;
   }
 

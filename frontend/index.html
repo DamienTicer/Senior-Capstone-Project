@@ -22,12 +22,14 @@
 
 <body>
 
-<!-- Simple Login Section -->
-<div id="login-section">
-  <h1 style="text-align:center; margin-top: 20px;">🎓 Bowie State Tech Discounts 🎓</h1>
-  <div style="display: flex; flex-direction: column; align-items: center; margin-top: 30px;">
-    <input type="email" id="email" placeholder="Enter your Bowie student email" required style="padding: 10px; width: 300px; margin-bottom: 10px;"/>
-    <button onclick="login()" class="login100-form-btn" style="padding: 10px 20px; background-color: black; color: white; border: none; border-radius: 5px;">Login</button>
+<!-- New Login Card Section -->
+<div id="login-section" class="loginContainer">
+  <div class="loginCard">
+    <div class="loginLogo">🎓</div>
+    <div class="loginHeading">Bowie State Tech Discounts</div>
+    <div class="loginSubheading">Sign in with your Bowie State student email</div>
+    <input type="email" id="email" class="loginInput" placeholder="Enter your Bowie student email" required />
+    <button onclick="login()" class="loginButton">Login</button>
   </div>
 </div>
 
@@ -48,18 +50,23 @@
       </div>
       <div class="navItem navOfferLogout">
         <span class="limitedOffer">Limited Offer!</span>
-        <button id="logoutBtn" class="logoutButton">Logout</button>
+      
+        <!-- ✅ Profile Button -->
+        <button id="profileBtn" class="profileButton">Profile</button>
+      
+        <!-- Cart Button (stays last) -->
         <div class="navItem">
           <button id="cartBtn" class="cartButton">🛒 Cart (<span id="cart-count">0</span>)</button>
         </div>
-      </div>
+      </div>      
     </div>
     <div class="navBottom">
-      <a href="not-ready.html" class="menuItem">IPHONE</a>
-      <a href="not-ready.html" class="menuItem">IPAD</a>
-      <a href="not-ready.html" class="menuItem">APPLE WATCH</a>
-      <a href="not-ready.html" class="menuItem">MACBOOK</a>
-      <a href="not-ready.html" class="menuItem">SURFACE</a>
+      <a href="#" class="menuItem">ALL</a>
+      <a href="#" class="menuItem">IPHONE</a>
+      <a href="#" class="menuItem">IPAD</a>
+      <a href="#" class="menuItem">APPLE WATCH</a>
+      <a href="#" class="menuItem">MACBOOK</a>
+      <a href="#" class="menuItem">SURFACE</a>
     </div>
   </nav>
 
@@ -105,24 +112,17 @@
         </ul>
       </div>
       <div class="footerMenu">
-        <h1 class="fMenuTitle">Products</h1>
+        <h1 class="fMenuTitle" id="products-title">Products</h1>
         <ul class="fList">
-          <li><a class="fListItem" href="not-ready.html">Iphone</a></li>
-          <li><a class="fListItem" href="not-ready.html">Ipad</a></li>
-          <li><a class="fListItem" href="not-ready.html">Watch</a></li>
-          <li><a class="fListItem" href="not-ready.html">Macbook</a></li>
-          <li><a class="fListItem" href="not-ready.html">Surface</a></li>
+          <li><a class="fListItem productLink" href="#">Iphone</a></li>
+          <li><a class="fListItem productLink" href="#">Ipad</a></li>
+          <li><a class="fListItem productLink" href="#">Watch</a></li>
+          <li><a class="fListItem productLink" href="#">Macbook</a></li>
+          <li><a class="fListItem productLink" href="#">Surface</a></li>
         </ul>
       </div>
     </div>
     <div class="footerRight">
-      <div class="footerRightMenu">
-        <h1 class="fMenuTitle">Subscribe to our newsletter</h1>
-        <div class="fMail">
-          <input type="text" placeholder="your@email.com" class="fInput" />
-          <button class="fButton">Join!</button>
-        </div>
-      </div>
       <div class="footerRightMenu">
         <h1 class="fMenuTitle">Follow Us</h1>
         <div class="fIcons">
@@ -199,6 +199,9 @@ async function loadProfile() {
   document.getElementById('school-name').textContent = profileData.schoolName;
   document.getElementById('school-logo').src = profileData.logoUrl;
 
+  allProducts = profileData.technologyOnSale; // <-- store products globally
+  renderProducts(allProducts);
+
   const techContainer = document.getElementById('products');
   techContainer.innerHTML = '';
 
@@ -221,11 +224,65 @@ async function loadProfile() {
   });
 }
 
+function renderProducts(products, highlight = '') {
+  const techContainer = document.getElementById('products');
+  techContainer.innerHTML = '';
+
+  if (products.length === 0) {
+    techContainer.innerHTML = `<p style="text-align:center; font-size:20px; margin-top:30px;">No Products Found</p>`;
+    return;
+  }
+
+  products.forEach((item) => {
+    const highlightedName = highlight 
+      ? item.name.replace(new RegExp(highlight, 'gi'), (match) => `<mark>${match}</mark>`)
+      : item.name;
+
+    const highlightedDesc = highlight
+      ? item.description.replace(new RegExp(highlight, 'gi'), (match) => `<mark>${match}</mark>`)
+      : item.description;
+
+    const card = document.createElement('div');
+    card.className = 'deviceItem';
+    card.innerHTML = `
+      <img class="product-image" src="./img/${item.imageUrl}" alt="${item.name}" onerror="this.onerror=null; this.src='./img/default.jpg';" />
+      <h2 class="sliderTitle">${highlightedName}</h2>
+      <p>${highlightedDesc}</p>
+      <h3 class="sliderPrice">${item.price}</h3>
+      <button class="buyButton">Buy Now</button>
+    `;
+    techContainer.appendChild(card);
+
+    card.querySelector('.buyButton').addEventListener('click', () => {
+      addToCart(item);
+    });
+  });
+}
+
+let allProducts = []; // global storage for filtering
+
 let cart = [];
+
+function saveCart() {
+  const user = JSON.parse(localStorage.getItem('currentUser'));
+  if (user?.email) {
+    localStorage.setItem(`cart-${user.email}`, JSON.stringify(cart));
+  }
+}
+
+function loadCart() {
+  const user = JSON.parse(localStorage.getItem('currentUser'));
+  if (user?.email) {
+    const savedCart = localStorage.getItem(`cart-${user.email}`);
+    cart = savedCart ? JSON.parse(savedCart) : [];
+  }
+}
 
 function addToCart(item) {
   cart.push(item);
+  saveCart();        // Save after adding
   updateCartUI();
+  alert(`${item.name} has been added to your cart!`);
 }
 
 function updateCartUI() {
@@ -241,6 +298,7 @@ function updateCartUI() {
 
 window.removeFromCart = function(index) {
   cart.splice(index, 1);
+  saveCart();
   updateCartUI();
 }
 
@@ -252,13 +310,90 @@ document.getElementById('closeCartBtn').addEventListener('click', () => {
   document.getElementById('cart-modal').style.display = 'none';
 });
 
-document.getElementById('logoutBtn').addEventListener('click', () => {
-  localStorage.removeItem('loggedIn');
-  localStorage.removeItem('currentUser');
-  location.reload();
+window.login = login; // expose login globally
+// Load cart on page load
+// Immediately run when page loads
+document.addEventListener('DOMContentLoaded', () => {
+  const isLoggedIn = localStorage.getItem('loggedIn');
+  
+  if (isLoggedIn === 'true') {
+    // User is still logged in (shouldn't happen after deleteProfile normally)
+    document.getElementById('login-section').style.display = 'none';
+    document.getElementById('after-login').style.display = 'block';
+    loadProfile();
+    loadCart();
+    updateCartUI();
+  } else {
+    // User is NOT logged in (this is what you want after delete profile or logout)
+    document.getElementById('after-login').style.display = 'none';
+    document.getElementById('login-section').style.display = 'flex'; // 💬 important: flex
+    document.getElementById('login-section').className = 'loginContainer'; // 💬 restore flexbox
+  }
 });
 
-window.login = login; // expose login globally
+function debounce(func, delay) {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), delay);
+  };
+}
+
+const searchInput = document.querySelector('.searchInput');
+
+searchInput.addEventListener('input', debounce((event) => {
+  const query = event.target.value.toLowerCase();
+
+  const filtered = allProducts.filter(product =>
+    product.name.toLowerCase().includes(query) ||
+    product.description.toLowerCase().includes(query)
+  );
+
+  renderProducts(filtered, query);
+}, 200)); // 200ms delay
+
+const menuItems = document.querySelectorAll('.menuItem');
+
+menuItems.forEach(item => {
+  item.addEventListener('click', (e) => {
+    e.preventDefault();
+    const category = item.textContent.toLowerCase();
+
+    if (category === 'all') {
+      renderProducts(allProducts); // <-- Reset to show everything
+      document.querySelector('.searchInput').value = ''; // Clear search box
+    } else {
+      const filtered = allProducts.filter(product =>
+        product.name.toLowerCase().includes(category)
+      );
+      renderProducts(filtered, category);
+    }
+  });
+});
+
+const footerProductLinks = document.querySelectorAll('.productLink');
+
+footerProductLinks.forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const category = link.textContent.toLowerCase();
+
+    const filtered = allProducts.filter(product =>
+      product.name.toLowerCase().includes(category)
+    );
+    renderProducts(filtered, category);
+  });
+});
+
+const productsTitle = document.getElementById('products-title');
+
+productsTitle.addEventListener('click', () => {
+  renderProducts(allProducts, 'All Products');
+});
+
+document.getElementById('profileBtn').addEventListener('click', () => {
+  window.location.href = 'profile.html';
+});
 </script>
 
 </body>
