@@ -19,26 +19,32 @@ const App = () => (
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
 
+// 🔥 Product rendering logic
 document.addEventListener('DOMContentLoaded', () => {
-    fetch('http://localhost:3000/products')
-      .then(response => response.json())
-      .then(products => {
-        const container = document.getElementById('product-slider');
-        container.innerHTML = '';
-  
-        products.forEach(product => {
-          const productCard = document.createElement('div');
-          productCard.className = 'product-card';
-  
-          productCard.innerHTML = `
-            <img src="${product.image_url}" alt="${product.name}" />
-            <h3>${product.name}</h3>
-            <p>Original Price: $${product.price}</p>
-            <p>Discount Price: $${product.discount_price}</p>
-          `;
-  
-          container.appendChild(productCard);
-        });
-      })
-      .catch(error => console.error('Error fetching products:', error));
-  });
+fetch('http://localhost:3000/products')
+  .then(response => response.json())
+  .then(products => {
+    const container = document.getElementById('product-slider');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    products.forEach(product => {
+      const productCard = document.createElement('div');
+      productCard.className = 'product-card';
+
+      // Fallback for missing image filenames
+      const imageFilename = product.image_url?.trim() || 'default.jpg';
+      const imagePath = imageFilename.startsWith('img/') ? imageFilename : `./img/${imageFilename}`;
+
+      productCard.innerHTML = `
+        <img class="product-img" src="${imagePath}" alt="${product.name}" onerror="this.onerror=null; this.src='./img/default.jpg';" />
+        <h3>${product.name}</h3>
+        <p>Original Price: $${product.price}</p>
+        <p>Discount Price: $${product.discount_price}</p>
+      `;
+
+      container.appendChild(productCard);
+    });
+  })
+  .catch(error => console.error('Error fetching products:', error));

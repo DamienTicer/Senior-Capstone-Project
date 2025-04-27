@@ -2,13 +2,18 @@
 
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const app = express();
 const connection = require('./initDB');
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Explicitly verify database connection before handling requests
+// Serve static images from frontend/img
+app.use('/img', express.static(path.join(__dirname, '../frontend/img')));
+
+// Verify database connection
 connection.connect(err => {
   if (err) {
     console.error('❗️ Database connection failed:', err.stack);
@@ -19,12 +24,16 @@ connection.connect(err => {
 
 // ====================== ROUTES ========================= //
 
-// Root/Home
+// Home/Health Check
 app.get('/', (req, res) => {
   res.send('Bowie Tech Discount API is running...');
 });
 
-// POST /login
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'Server is running fine!' });
+});
+
+// ================== LOGIN ==================
 app.post('/login', (req, res) => {
   const { email } = req.body;
 
@@ -48,30 +57,79 @@ app.post('/login', (req, res) => {
         message: 'Login successful!',
         user: results[0]
       });
-    } else {
-      const insertQuery = `INSERT INTO users (email) VALUES (?)`;
-      connection.query(insertQuery, [email], (err, result) => {
-        if (err) {
-          console.error('❗️ Database error on INSERT:', err);
-          return res.status(500).json({ message: 'Insert error' });
-        }
-
-        const newUser = {
-          id: result.insertId,
-          email,
-          created_at: new Date(),
-          last_login: new Date()
-        };
-        res.json({
-          message: 'New user created successfully!',
-          user: newUser
-        });
-      });
     }
+
+    const insertQuery = `INSERT INTO users (email) VALUES (?)`;
+    connection.query(insertQuery, [email], (err, result) => {
+      if (err) {
+        console.error('❗️ Database error on INSERT:', err);
+        return res.status(500).json({ message: 'Insert error' });
+      }
+
+      const newUser = {
+        id: result.insertId,
+        email,
+        created_at: new Date(),
+        last_login: new Date()
+      };
+      res.json({
+        message: 'New user created successfully!',
+        user: newUser
+      });
+    });
   });
 });
 
-// GET /api/profile/:email
+// ================== REGISTER ==================
+app.post('/register', (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: 'Email is required.' });
+  }
+
+  if (!email.endsWith('@students.bowiestate.edu')) {
+    return res.status(400).json({ message: 'Invalid email domain' });
+  }
+
+  console.log(`📝 Attempting to register: ${email}`);
+
+  const checkUserQuery = `SELECT * FROM users WHERE email = ?`;
+  connection.query(checkUserQuery, [email], (err, results) => {
+    if (err) {
+      console.error('❗️ Database error on SELECT (register):', err);
+      return res.status(500).json({ message: 'Database error' });
+    }
+
+    if (results.length > 0) {
+      console.warn(`⚠️ Email already exists: ${email}`);
+      return res.status(409).json({ message: 'Account already exists' });
+    }
+
+    const insertQuery = `INSERT INTO users (email) VALUES (?)`;
+    connection.query(insertQuery, [email], (err, result) => {
+      if (err) {
+        console.error('❗️ Database error on INSERT:', err);
+        return res.status(500).json({ message: 'Registration failed' });
+      }
+
+      const newUser = {
+        id: result.insertId,
+        email,
+        created_at: new Date(),
+        last_login: new Date()
+      };
+
+      console.log(`✅ New user registered: ${email}`);
+      res.json({
+        message: 'Registration successful!',
+        user: newUser
+      });
+    });
+  });
+});
+
+// ================== PROFILE ==================
 app.get('/api/profile/:email', (req, res) => {
   const { email } = req.params;
   const query = `SELECT * FROM users WHERE email = ?`;
@@ -90,7 +148,7 @@ app.get('/api/profile/:email', (req, res) => {
   });
 });
 
-// GET /products
+// ================== PRODUCTS ==================
 app.get('/products', (req, res) => {
   const query = `SELECT * FROM products`;
   connection.query(query, (err, results) => {
@@ -98,18 +156,19 @@ app.get('/products', (req, res) => {
       console.error('❗️ Error fetching products:', err);
       return res.status(500).json({ message: 'Failed to fetch products' });
     }
-    res.json(results);
+
+    const productsWithFallback = results.map(product => ({
+      ...product,
+      image_url: product.image_url && product.image_url.trim() !== ''
+        ? product.image_url
+        : 'default.jpg'
+    }));
+
+    res.json(productsWithFallback);
   });
 });
 
-// Health check
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'Server is running fine!' });
-});
-
-// ====================================================== //
-
-// Start server
+// ================== START SERVER ==================
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
