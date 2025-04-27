@@ -1,124 +1,265 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Bowie State Tech Discounts</title>
-  <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet" />
+  <link rel="icon" href="./images/favicon.ico" type="image/x-icon" />
+
+  <!-- General Styles -->
+  <link rel="stylesheet" href="./vendor/bootstrap/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="./fonts/font-awesome-4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="./fonts/iconic/css/material-design-iconic-font.min.css" />
+  <link rel="stylesheet" href="./vendor/animate/animate.css" />
+  <link rel="stylesheet" href="./vendor/css-hamburgers/hamburgers.min.css" />
+  <link rel="stylesheet" href="./vendor/animsition/css/animsition.min.css" />
+  <link rel="stylesheet" href="./vendor/select2/select2.min.css" />
+  <link rel="stylesheet" href="./vendor/daterangepicker/daterangepicker.css" />
+  <link rel="stylesheet" href="./css/util.css" />
+  <link rel="stylesheet" href="./css/main.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-  <div id="login-section">
-    <h1>🎓 Bowie State Tech Discounts 🎓</h1>
-    <input type="email" id="email" placeholder="Enter your Bowie student email" required />
-    <button onclick="login()">Login</button>
+
+<!-- Simple Login Section -->
+<div id="login-section">
+  <h1 style="text-align:center; margin-top: 20px;">🎓 Bowie State Tech Discounts 🎓</h1>
+  <div style="display: flex; flex-direction: column; align-items: center; margin-top: 30px;">
+    <input type="email" id="email" placeholder="Enter your Bowie student email" required style="padding: 10px; width: 300px; margin-bottom: 10px;"/>
+    <button onclick="login()" class="login100-form-btn" style="padding: 10px 20px; background-color: black; color: white; border: none; border-radius: 5px;">Login</button>
+  </div>
+</div>
+
+<!-- After Login Section -->
+<div id="after-login" style="display: none;">
+  <nav id="nav">
+    <div class="navTop">
+      <div class="navItem">
+        <img id="school-logo" alt="School Logo" class="school-logo" />
+      </div>
+      <div class="navItem">
+
+        <div class="search">
+          <input type="text" placeholder="Search..." class="searchInput" />
+          <img src="./img/bsulogo.png" width="20" height="20" alt="" class="searchIcon" />
+        </div>
+
+      </div>
+      <div class="navItem navOfferLogout">
+        <span class="limitedOffer">Limited Offer!</span>
+        <button id="logoutBtn" class="logoutButton">Logout</button>
+        <div class="navItem">
+          <button id="cartBtn" class="cartButton">🛒 Cart (<span id="cart-count">0</span>)</button>
+        </div>
+      </div>
+    </div>
+    <div class="navBottom">
+      <a href="not-ready.html" class="menuItem">IPHONE</a>
+      <a href="not-ready.html" class="menuItem">IPAD</a>
+      <a href="not-ready.html" class="menuItem">APPLE WATCH</a>
+      <a href="not-ready.html" class="menuItem">MACBOOK</a>
+      <a href="not-ready.html" class="menuItem">SURFACE</a>
+    </div>
+  </nav>
+
+  <h2 id="school-name" style="text-align:center;"></h2>
+  
+  <section class="categories" id="categories">
+    <div class="category-item"><h3>Laptops</h3><p>Up to 20% off on select models</p></div>
+    <div class="category-item"><h3>Tablets</h3><p>Discounted for student use</p></div>
+    <div class="category-item"><h3>Smartphones</h3><p>Save up to $150</p></div>
+    <div class="category-item"><h3>Wearables</h3><p>Exclusive deals on smartwatches</p></div>
+  </section>
+
+  <div id="products" class="technology"></div>
+
+  <div id="cart-modal" class="cartModal" style="display: none;">
+    <div class="cartModalContent">
+      <h2>Your Cart</h2>
+      <ul id="cart-items"></ul>
+      <button id="closeCartBtn" class="closeCartBtn">Close</button>
+    </div>
   </div>
 
-  <div id="after-login" style="display: none">
-    <nav id="nav">
-      <div class="navTop">
-        <div class="navItem"><img id="school-logo" alt="School Logo" /></div>
-        <div class="navItem">
-          <div class="search">
-            <input type="text" placeholder="Search..." class="searchInput" />
-            <img src="./img/search.png" width="20" height="20" alt="" class="searchIcon" />
-          </div>
+  <footer>
+    <div class="footerLeft">
+      <div class="footerMenu">
+        <h1 class="fMenuTitle">About us</h1>
+        <ul class="fList">
+          <li><a class="fListItem" href="https://www.bowiestate.edu/">BowieStateUniversity</a></li>
+          <li><a class="fListItem" href="not-ready.html">Contact</a></li>
+          <li><a class="fListItem" href="not-ready.html">Careers</a></li>
+          <li><a class="fListItem" href="not-ready.html">Affiliates</a></li>
+          <li><a class="fListItem" href="not-ready.html">Stores</a></li>
+        </ul>
+      </div>
+      <div class="footerMenu">
+        <h1 class="fMenuTitle">Useful Links</h1>
+        <ul class="fList">
+          <li><a class="fListItem" href="not-ready.html">Support</a></li>
+          <li><a class="fListItem" href="not-ready.html">Refund</a></li>
+          <li><a class="fListItem" href="not-ready.html">FAQ</a></li>
+          <li><a class="fListItem" href="not-ready.html">Feedback</a></li>
+          <li><a class="fListItem" href="not-ready.html">Stories</a></li>
+        </ul>
+      </div>
+      <div class="footerMenu">
+        <h1 class="fMenuTitle">Products</h1>
+        <ul class="fList">
+          <li><a class="fListItem" href="not-ready.html">Iphone</a></li>
+          <li><a class="fListItem" href="not-ready.html">Ipad</a></li>
+          <li><a class="fListItem" href="not-ready.html">Watch</a></li>
+          <li><a class="fListItem" href="not-ready.html">Macbook</a></li>
+          <li><a class="fListItem" href="not-ready.html">Surface</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footerRight">
+      <div class="footerRightMenu">
+        <h1 class="fMenuTitle">Subscribe to our newsletter</h1>
+        <div class="fMail">
+          <input type="text" placeholder="your@email.com" class="fInput" />
+          <button class="fButton">Join!</button>
         </div>
-        <div class="navItem navOfferLogout">
-          <span class="limitedOffer">Limited Offer!</span>
-          <button id="logoutBtn" class="logoutButton">Logout</button>
+      </div>
+      <div class="footerRightMenu">
+        <h1 class="fMenuTitle">Follow Us</h1>
+        <div class="fIcons">
+          <a href="https://www.facebook.com/bowiestate/" target="_blank" rel="noopener noreferrer">
+            <img src="./img/icons8-facebook-48.png" alt="Facebook" class="fIcon" />
+          </a>
+          <a href="https://www.instagram.com/bowiestateuniversity/" target="_blank" rel="noopener noreferrer">
+            <img src="./img/icons8-instagram-48.png" alt="Instagram" class="fIcon" />
+          </a>
+          <a href="https://twitter.com/BowieState" target="_blank" rel="noopener noreferrer">
+            <img src="./img/icons8-x-50.png" alt="Twitter/X" class="fIcon" />
+          </a>
         </div>        
       </div>
-      <div class="navBottom">
-        <a href="not-ready.html" class="menuItem">IPHONE</a>
-        <a href="not-ready.html" class="menuItem">IPAD</a>
-        <a href="not-ready.html" class="menuItem">APPLE WATCH</a>
-        <a href="not-ready.html" class="menuItem">MACBOOK</a>
-        <a href="not-ready.html" class="menuItem">SURFACE</a>
+      <div class="footerRightMenu">
+        <span class="copyright">@Bowie State University. All rights reserved. 2025.</span>
       </div>
-    </nav>
+    </div>
+  </footer>
+</div>
 
-    <section class="categories" id="categories">
-      <h2 id="school-name" style="text-align:center;"></h2>
-      <div class="category-item">
-        <h3>Laptops</h3>
-        <p>Up to 20% off on select models</p>
-      </div>
-      <div class="category-item">
-        <h3>Tablets</h3>
-        <p>Discounted for student use</p>
-      </div>
-      <div class="category-item">
-        <h3>Smartphones</h3>
-        <p>Save up to $150</p>
-      </div>
-      <div class="category-item">
-        <h3>Wearables</h3>
-        <p>Exclusive deals on smartwatches</p>
-      </div>
-    </section>
+<!-- Scripts -->
+<script src="./vendor/jquery/jquery-3.2.1.min.js"></script>
+<script src="./vendor/bootstrap/js/popper.js"></script>
+<script src="./vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="./vendor/select2/select2.min.js"></script>
+<script src="./vendor/tilt/tilt.jquery.min.js"></script>
+<script>
+  $('.js-tilt').tilt({ scale: 1.1 });
+</script>
 
-    <div id="products" class="technology"></div>
+<script type="module">
+import { fetchSchoolProfile } from './API.js'; // ✅ Make sure API.js exists in js/
 
-    <footer>
-      <div class="footerLeft">
-        <div class="footerMenu">
-          <h1 class="fMenuTitle">About us</h1>
-          <ul class="fList">
-            <li><a class="fListItem" href="https://www.bowiestate.edu/">BowieStateUniversity</a></li>
-            <li><a class="fListItem" href="not-ready.html">Contact</a></li>
-            <li><a class="fListItem" href="not-ready.html">Careers</a></li>
-            <li><a class="fListItem" href="not-ready.html">Affiliates</a></li>
-            <li><a class="fListItem" href="not-ready.html">Stores</a></li>
-          </ul>
-        </div>
-        <div class="footerMenu">
-          <h1 class="fMenuTitle">Useful Links</h1>
-          <ul class="fList">
-            <li><a class="fListItem" href="not-ready.html">Support</a></li>
-            <li><a class="fListItem" href="not-ready.html">Refund</a></li>
-            <li><a class="fListItem" href="not-ready.html">FAQ</a></li>
-            <li><a class="fListItem" href="not-ready.html">Feedback</a></li>
-            <li><a class="fListItem" href="not-ready.html">Stories</a></li>
-          </ul>
-        </div>
-        <div class="footerMenu">
-          <h1 class="fMenuTitle">Products</h1>
-          <ul class="fList">
-            <li><a class="fListItem" href="not-ready.html">Iphone</a></li>
-            <li><a class="fListItem" href="not-ready.html">Ipad</a></li>
-            <li><a class="fListItem" href="not-ready.html">Watch</a></li>
-            <li><a class="fListItem" href="not-ready.html">Macbook</a></li>
-            <li><a class="fListItem" href="not-ready.html">Surface</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footerRight">
-        <div class="footerRightMenu">
-          <h1 class="fMenuTitle">Subscribe to our newsletter</h1>
-          <div class="fMail">
-            <input type="text" placeholder="your@email.com" class="fInput" />
-            <button class="fButton">Join!</button>
-          </div>
-        </div>
-        <div class="footerRightMenu">
-          <h1 class="fMenuTitle">Follow Us</h1>
-          <div class="fIcons">
-            <img src="./img/facebook.png" alt="" class="fIcon" />
-            <img src="./img/instagram.png" alt="" class="fIcon" />
-            <img src="./img/whatsapp.png" alt="" class="fIcon" />
-          </div>
-        </div>
-        <div class="footerRightMenu">
-          <span class="copyright">@Bowie State University. All rights reserved. 2025.</span>
-        </div>
-      </div>
-    </footer>
-  </div>
+async function login() {
+  const email = document.getElementById('email').value;
+  if (!email) {
+    alert('Please enter your email.');
+    return;
+  }
 
-  <script type="module" src="main.js"></script>
+  try {
+    const res = await fetch('http://localhost:3000/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+
+    const data = await res.json();
+
+    if (res.status === 200) {
+      localStorage.setItem('loggedIn', 'true');
+      localStorage.setItem('currentUser', JSON.stringify(data.user));
+      document.getElementById('login-section').style.display = 'none';
+      document.getElementById('after-login').style.display = 'block';
+      loadProfile();
+    } else {
+      alert(data.message || 'Login failed.');
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Error connecting to server.');
+  }
+}
+
+async function loadProfile() {
+  const profileData = await fetchSchoolProfile();
+
+  if (!profileData) {
+    console.error('Failed to load profile data.');
+    return;
+  }
+
+  document.getElementById('school-name').textContent = profileData.schoolName;
+  document.getElementById('school-logo').src = profileData.logoUrl;
+
+  const techContainer = document.getElementById('products');
+  techContainer.innerHTML = '';
+
+  profileData.technologyOnSale.forEach((item) => {
+    const card = document.createElement('div');
+    card.className = 'deviceItem';
+    card.innerHTML = `
+      <img class="product-image" src="./img/${item.imageUrl}" alt="${item.name}" onerror="this.onerror=null; this.src='./img/default.jpg';" />
+      <h2 class="sliderTitle">${item.name}</h2>
+      <p>${item.description}</p>
+      <h3 class="sliderPrice">${item.price}</h3>
+      <button class="buyButton">Buy Now</button>
+    `;
+
+    techContainer.appendChild(card);
+
+    card.querySelector('.buyButton').addEventListener('click', () => {
+      addToCart(item);
+    });
+  });
+}
+
+let cart = [];
+
+function addToCart(item) {
+  cart.push(item);
+  updateCartUI();
+}
+
+function updateCartUI() {
+  document.getElementById('cart-count').textContent = cart.length;
+  const cartList = document.getElementById('cart-items');
+  cartList.innerHTML = '';
+  cart.forEach((item, i) => {
+    const li = document.createElement('li');
+    li.innerHTML = `${item.name} - ${item.price} <button class="removeBtn" onclick="removeFromCart(${i})">Remove</button>`;
+    cartList.appendChild(li);
+  });
+}
+
+window.removeFromCart = function(index) {
+  cart.splice(index, 1);
+  updateCartUI();
+}
+
+document.getElementById('cartBtn').addEventListener('click', () => {
+  document.getElementById('cart-modal').style.display = 'flex';
+});
+
+document.getElementById('closeCartBtn').addEventListener('click', () => {
+  document.getElementById('cart-modal').style.display = 'none';
+});
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  localStorage.removeItem('loggedIn');
+  localStorage.removeItem('currentUser');
+  location.reload();
+});
+
+window.login = login; // expose login globally
+</script>
+
 </body>
-
 </html>

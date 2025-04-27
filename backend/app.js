@@ -57,26 +57,75 @@ app.post('/login', (req, res) => {
         message: 'Login successful!',
         user: results[0]
       });
-    } else {
-      const insertQuery = `INSERT INTO users (email) VALUES (?)`;
-      connection.query(insertQuery, [email], (err, result) => {
-        if (err) {
-          console.error('❗️ Database error on INSERT:', err);
-          return res.status(500).json({ message: 'Insert error' });
-        }
-
-        const newUser = {
-          id: result.insertId,
-          email,
-          created_at: new Date(),
-          last_login: new Date()
-        };
-        res.json({
-          message: 'New user created successfully!',
-          user: newUser
-        });
-      });
     }
+
+    const insertQuery = `INSERT INTO users (email) VALUES (?)`;
+    connection.query(insertQuery, [email], (err, result) => {
+      if (err) {
+        console.error('❗️ Database error on INSERT:', err);
+        return res.status(500).json({ message: 'Insert error' });
+      }
+
+      const newUser = {
+        id: result.insertId,
+        email,
+        created_at: new Date(),
+        last_login: new Date()
+      };
+      res.json({
+        message: 'New user created successfully!',
+        user: newUser
+      });
+    });
+  });
+});
+
+// ================== REGISTER ==================
+app.post('/register', (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: 'Email is required.' });
+  }
+
+  if (!email.endsWith('@students.bowiestate.edu')) {
+    return res.status(400).json({ message: 'Invalid email domain' });
+  }
+
+  console.log(`📝 Attempting to register: ${email}`);
+
+  const checkUserQuery = `SELECT * FROM users WHERE email = ?`;
+  connection.query(checkUserQuery, [email], (err, results) => {
+    if (err) {
+      console.error('❗️ Database error on SELECT (register):', err);
+      return res.status(500).json({ message: 'Database error' });
+    }
+
+    if (results.length > 0) {
+      console.warn(`⚠️ Email already exists: ${email}`);
+      return res.status(409).json({ message: 'Account already exists' });
+    }
+
+    const insertQuery = `INSERT INTO users (email) VALUES (?)`;
+    connection.query(insertQuery, [email], (err, result) => {
+      if (err) {
+        console.error('❗️ Database error on INSERT:', err);
+        return res.status(500).json({ message: 'Registration failed' });
+      }
+
+      const newUser = {
+        id: result.insertId,
+        email,
+        created_at: new Date(),
+        last_login: new Date()
+      };
+
+      console.log(`✅ New user registered: ${email}`);
+      res.json({
+        message: 'Registration successful!',
+        user: newUser
+      });
+    });
   });
 });
 
