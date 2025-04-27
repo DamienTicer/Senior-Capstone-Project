@@ -50,11 +50,15 @@
       </div>
       <div class="navItem navOfferLogout">
         <span class="limitedOffer">Limited Offer!</span>
-        <button id="logoutBtn" class="logoutButton">Logout</button>
+      
+        <!-- ✅ Profile Button -->
+        <button id="profileBtn" class="profileButton">Profile</button>
+      
+        <!-- Cart Button (stays last) -->
         <div class="navItem">
           <button id="cartBtn" class="cartButton">🛒 Cart (<span id="cart-count">0</span>)</button>
         </div>
-      </div>
+      </div>      
     </div>
     <div class="navBottom">
       <a href="#" class="menuItem">ALL</a>
@@ -301,6 +305,7 @@ function updateCartUI() {
 
 window.removeFromCart = function(index) {
   cart.splice(index, 1);
+  saveCart();
   updateCartUI();
 }
 
@@ -312,19 +317,24 @@ document.getElementById('closeCartBtn').addEventListener('click', () => {
   document.getElementById('cart-modal').style.display = 'none';
 });
 
-document.getElementById('logoutBtn').addEventListener('click', () => {
-  localStorage.removeItem('loggedIn');
-  localStorage.removeItem('currentUser');
-  location.reload();
-});
-
 window.login = login; // expose login globally
 // Load cart on page load
+// Immediately run when page loads
 document.addEventListener('DOMContentLoaded', () => {
   const isLoggedIn = localStorage.getItem('loggedIn');
+  
   if (isLoggedIn === 'true') {
+    // User is still logged in (shouldn't happen after deleteProfile normally)
+    document.getElementById('login-section').style.display = 'none';
+    document.getElementById('after-login').style.display = 'block';
+    loadProfile();
     loadCart();
     updateCartUI();
+  } else {
+    // User is NOT logged in (this is what you want after delete profile or logout)
+    document.getElementById('after-login').style.display = 'none';
+    document.getElementById('login-section').style.display = 'flex'; // 💬 important: flex
+    document.getElementById('login-section').className = 'loginContainer'; // 💬 restore flexbox
   }
 });
 
@@ -386,6 +396,10 @@ const productsTitle = document.getElementById('products-title');
 
 productsTitle.addEventListener('click', () => {
   renderProducts(allProducts, 'All Products');
+});
+
+document.getElementById('profileBtn').addEventListener('click', () => {
+  window.location.href = 'profile.html';
 });
 </script>
 

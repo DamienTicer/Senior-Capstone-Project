@@ -24,7 +24,7 @@ connection.connect(err => {
 
 // ====================== ROUTES ========================= //
 
-// Health Check
+// Home/Health Check
 app.get('/', (req, res) => {
   res.send('Bowie Tech Discount API is running...');
 });
@@ -37,14 +37,10 @@ app.get('/health', (req, res) => {
 app.post('/login', (req, res) => {
   const { email } = req.body;
 
-  if (!email) {
-    return res.status(400).json({ message: 'Email is required.' });
-  }
-
-  if (!email.endsWith('@students.bowiestate.edu')) {
+  if (!email || !email.endsWith('@students.bowiestate.edu')) {
     return res.status(400).json({ message: 'Invalid email domain' });
   }
-  
+
   const checkUserQuery = `SELECT * FROM users WHERE email = ?`;
   connection.query(checkUserQuery, [email], (err, results) => {
     if (err) {
@@ -52,19 +48,34 @@ app.post('/login', (req, res) => {
       return res.status(500).json({ message: 'Database error' });
     }
 
-    if (results.length === 0) {
-      return res.status(404).json({ message: 'User does not exist' });
+    if (results.length > 0) {
+      const updateQuery = `UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE email = ?`;
+      connection.query(updateQuery, [email], err => {
+        if (err) console.error('❗️ Database error on UPDATE:', err);
+      });
+      return res.json({
+        message: 'Login successful!',
+        user: results[0]
+      });
     }
 
-    const user = results[0];
-    const updateQuery = `UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE email = ?`;
-    connection.query(updateQuery, [email], err => {
-      if (err) console.error('❗️ Database error on UPDATE:', err);
-    });
+    const insertQuery = `INSERT INTO users (email) VALUES (?)`;
+    connection.query(insertQuery, [email], (err, result) => {
+      if (err) {
+        console.error('❗️ Database error on INSERT:', err);
+        return res.status(500).json({ message: 'Insert error' });
+      }
 
-    return res.json({
-      message: 'Login successful!',
-      user
+      const newUser = {
+        id: result.insertId,
+        email,
+        created_at: new Date(),
+        last_login: new Date()
+      };
+      res.json({
+        message: 'New user created successfully!',
+        user: newUser
+      });
     });
   });
 });
@@ -154,6 +165,30 @@ app.get('/products', (req, res) => {
     }));
 
     res.json(productsWithFallback);
+  });
+});
+
+// ================== DELETE PROFILE ==================
+app.delete('/api/deleteProfile/:email', (req, res) => {
+  const { email } = req.params;
+
+  if (!email) {
+    return res.status(400).json({ message: 'Email is required.' });
+  }
+
+  const deleteUserQuery = `DELETE FROM users WHERE email = ?`;
+  connection.query(deleteUserQuery, [email], (err, result) => {
+    if (err) {
+      console.error('❗️ Error deleting user:', err);
+      return res.status(500).json({ message: 'Database error' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    console.log(`✅ Deleted user: ${email}`);
+    res.json({ message: 'Profile deleted successfully.' });
   });
 });
 
