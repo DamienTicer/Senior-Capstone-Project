@@ -31,6 +31,60 @@
       "description": "Versatile Windows laptop ideal for students and creators.",
       "price": "$1199",
       "imageUrl": "MicrosoftSurface2024_2.jpg"
+    },
+    {
+      "name": "Samsung Galaxy Tab S9",
+      "description": "Sleek Android tablet built for work and play.",
+      "price": "$799",
+      "imageUrl": "galaxy_tab_s9.jpg"
+    },
+    {
+      "name": "Dell XPS 15 Laptop",
+      "description": "Performance laptop for students needing power and portability.",
+      "price": "$1249",
+      "imageUrl": "dell_xps_15.jpg"
+    },
+    {
+      "name": "Logitech MX Master 3S Mouse",
+      "description": "Advanced ergonomic mouse for multitasking and precision.",
+      "price": "$99",
+      "imageUrl": "logitech_mx_master_3s.jpg"
+    },
+    {
+      "name": "Sony WH-1000XM5 Headphones",
+      "description": "Noise-canceling headphones for immersive study sessions.",
+      "price": "$349",
+      "imageUrl": "sony_wh1000xm5.jpg"
+    },
+    {
+      "name": "Anker PowerCore 20000",
+      "description": "High-capacity portable charger to keep your devices powered.",
+      "price": "$69",
+      "imageUrl": "anker_powercore_20000.jpg"
+    },
+    {
+      "name": "Canon EOS R50 Camera",
+      "description": "Capture stunning memories with this lightweight mirrorless camera.",
+      "price": "$899",
+      "imageUrl": "canon_eos_r50.jpg"
+    },
+    {
+      "name": "Nintendo Switch OLED",
+      "description": "The ultimate handheld gaming experience with vivid OLED screen.",
+      "price": "$349",
+      "imageUrl": "nintendo_switch_oled.jpg"
+    },
+    {
+      "name": "Fitbit Versa 4",
+      "description": "Track your fitness and health goals easily with the Versa 4.",
+      "price": "$229",
+      "imageUrl": "fitbit_versa_4.jpg"
+    },
+    {
+      "name": "Apple AirPods Pro 2",
+      "description": "Top-tier wireless earbuds with active noise cancellation.",
+      "price": "$249",
+      "imageUrl": "airpods_pro_2.jpg"
     }
   ]
 }
