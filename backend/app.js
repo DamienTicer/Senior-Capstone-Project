@@ -41,6 +41,10 @@ app.post('/login', (req, res) => {
     return res.status(400).json({ message: 'Email is required.' });
   }
 
+  if (!email.endsWith('@students.bowiestate.edu')) {
+    return res.status(400).json({ message: 'Invalid email domain' });
+  }
+  
   const checkUserQuery = `SELECT * FROM users WHERE email = ?`;
   connection.query(checkUserQuery, [email], (err, results) => {
     if (err) {
