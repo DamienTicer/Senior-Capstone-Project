@@ -1,14 +1,36 @@
 {
+  "schoolName": "Bowie State University",
+  "logoUrl": "./img/bsu2.png",
   "technologyOnSale": [
     {
-      "name": "3D Printer",
-      "description": "High-quality 3D printer for rapid prototyping.",
-      "price": "$1,500"
+      "name": "iPad 10th Gen",
+      "description": "Latest iPad model, perfect for studying and entertainment.",
+      "price": "$379",
+      "imageUrl": "iPad10thGen2.jpg"
     },
     {
-      "name": "VR Headset",
-      "description": "Immersive virtual reality experience for learning.",
-      "price": "$500"
+      "name": "Apple Watch Series 10",
+      "description": "Stay connected and track your health with Apple Watch Series 10.",
+      "price": "$429",
+      "imageUrl": "AppleWatchSeries10_2.jpg"
+    },
+    {
+      "name": "iPhone 16 Pro Max",
+      "description": "Next-generation performance with the iPhone 16 Pro Max.",
+      "price": "$949",
+      "imageUrl": "iPhone16Promax2.jpg"
+    },
+    {
+      "name": "MacBook Air 2024",
+      "description": "Lightweight powerhouse laptop designed for portability and speed.",
+      "price": "$999",
+      "imageUrl": "MacbookAir2024_2.jpg"
+    },
+    {
+      "name": "Microsoft Surface 2024",
+      "description": "Versatile Windows laptop ideal for students and creators.",
+      "price": "$1199",
+      "imageUrl": "MicrosoftSurface2024_2.jpg"
     }
   ]
 }

@@ -1,3 +1,4 @@
+/* ----------------- GLOBAL STYLES ----------------- */
 html {
   scroll-behavior: smooth;
 }
@@ -24,11 +25,9 @@ nav {
   height: 150px;
   object-fit: contain;
   display: block;
-  margin-top: -40px;   /* pull it upward */
-  margin-bottom: -80px; /* reduces space below */
+  margin-top: -40px;
+  margin-bottom: -80px;
 }
-
-
 
 .search {
   display: flex;
@@ -286,4 +285,137 @@ footer {
     width: 100%;
     padding: 20px;
   }
+
+  .cartButton {
+    background-color: orange;
+    color: black;
+    padding: 6px 14px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .cartModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+
+  .cartModalContent {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  .closeCartBtn {
+    background-color: crimson;
+    color: white;
+    padding: 8px;
+    margin-top: 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .removeBtn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 2px 8px;
+    font-size: 12px;
+    margin-left: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .removeBtn:hover {
+    background-color: #b02a37;
+  }  
+}
+
+/* ========== LOGIN PAGE ========== */
+
+.loginContainer {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #eef2f8;
+  padding: 20px;
+  font-family: "Lato", sans-serif;
+}
+
+.loginCard {
+  background: white;
+  padding: 40px 32px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+}
+
+/* 🔵 ADD THIS to ensure consistent width */
+.loginCard input,
+.loginCard button {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.loginLogo {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.loginHeading {
+  font-size: 24px;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.loginSubheading {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 24px;
+}
+
+.loginInput {
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+  outline: none;
+}
+
+.loginInput:focus {
+  border-color: #4a90e2;
+}
+
+.loginButton {
+  padding: 12px 16px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.loginButton:hover {
+  background-color: #3b7bdc;
 }

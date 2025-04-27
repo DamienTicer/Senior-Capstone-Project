@@ -1,6 +1,21 @@
 // main.js
 
-window.login = async function login() {
+let cart = [];
+
+document.addEventListener("DOMContentLoaded", () => {
+  const isLoggedIn = localStorage.getItem("loggedIn");
+  if (isLoggedIn === "true") {
+    document.getElementById("login-section").style.display = "none";
+    document.getElementById("after-login").style.display = "block";
+    loadCart();
+    loadProfile();
+    loadProducts(); // ✅ Add this
+  }
+});
+
+// Basic login method (unchanged)
+async function login() {
+
   const email = document.getElementById('email').value;
 
   if (!email || !email.endsWith('@students.bowiestate.edu')) {
@@ -8,64 +23,116 @@ window.login = async function login() {
     return;
   }
 
-  try {
-    const res = await fetch('http://localhost:3000/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
-    });
+  localStorage.setItem("loggedIn", "true");
+  document.getElementById("login-section").style.display = "none";
+  document.getElementById("after-login").style.display = "block";
+  loadCart();
+  updateCartUI();
+  loadProfile();
+  loadProducts(); // ✅ Load mock products on login
+}
 
-    const data = await res.json();
-
-    if (res.ok && data.user) {
-      alert(data.message);
-      document.getElementById("login-section").style.display = "none";
-      document.getElementById("after-login").style.display = "block";
-      loadProducts();
-    } else {
-      alert(data.message || 'Login failed.');
-    }
-  } catch (err) {
-    alert('Error connecting to server');
-    console.error(err);
+// Fetch school profile (unchanged)
+async function loadProfile() {
+  const profileData = await fetchSchoolProfile();
+  if (!profileData) {
+    console.error("Failed to load profile data.");
+    return;
   }
-};
 
+  document.getElementById('school-name').textContent = profileData.schoolName;
+  document.getElementById('school-logo').src = profileData.logoUrl;
+}
+
+// ✅ Fetch and display products from mockAPI.json
 async function loadProducts() {
   try {
-    const res = await fetch('http://localhost:3000/products');
-    const products = await res.json();
+    const res = await fetch('mockAPI.json');
+    const data = await res.json();
 
-    const container = document.getElementById("products");
-    container.innerHTML = "";
+    const container = document.getElementById('products');
+    container.innerHTML = '';
 
-    products.forEach((item) => {
-      const card = document.createElement("div");
-      card.className = "deviceItem";
+    data.technologyOnSale.forEach((item) => {
+      const card = document.createElement('div');
+      card.className = 'deviceItem';
       card.innerHTML = `
-        <img src="${item.image_url}" class="product-image" alt="${item.name}" />
+        <img class="product-image" src="./img/${item.imageUrl || 'default.jpg'}" alt="${item.name}" onerror="this.onerror=null; this.src='./img/default.jpg';">
         <h2 class="sliderTitle">${item.name}</h2>
-        <p>Original Price: <s>$${item.price}</s></p>
-        <h3 class="sliderPrice">Discount Price: $${item.discount_price}</h3>
+        <p>${item.description}</p>
+        <h3 class="sliderPrice">${item.price}</h3>
         <button class="buyButton">Buy Now</button>
       `;
+
+      // Attach event for cart
+      const buyBtn = card.querySelector('.buyButton');
+      buyBtn.addEventListener('click', () => addToCart(item));
+
       container.appendChild(card);
     });
+
   } catch (err) {
-    console.error("Failed to load products:", err);
+    console.error('Error loading products:', err);
   }
 }
 
-window.addEventListener("DOMContentLoaded", () => {
-  // Always show login first
-  document.getElementById("login-section").style.display = "block";
-  document.getElementById("after-login").style.display = "none";
+// Cart functions
+function addToCart(item) {
+  cart.push(item);
+  saveCart();
+  updateCartUI();
+  alert(`${item.name} added to cart!`);
+}
 
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-      document.getElementById("after-login").style.display = "none";
-      document.getElementById("login-section").style.display = "block";
+function saveCart() {
+  localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+function loadCart() {
+  const storedCart = localStorage.getItem('cart');
+  cart = storedCart ? JSON.parse(storedCart) : [];
+  updateCartUI();
+}
+
+function updateCartUI() {
+  document.getElementById("cart-count").textContent = cart.length;
+  const cartList = document.getElementById("cart-items");
+  cartList.innerHTML = '';
+
+  cart.forEach((item, index) => {
+    const li = document.createElement('li');
+    li.innerHTML = `
+      ${item.name} - ${item.price}
+      <button class="removeBtn" data-index="${index}">Remove</button>
+    `;
+    cartList.appendChild(li);
+  });
+
+  document.querySelectorAll('.removeBtn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const index = parseInt(e.target.getAttribute('data-index'));
+      removeFromCart(index);
     });
-  }
+  });
+}
+
+function removeFromCart(index) {
+  cart.splice(index, 1);
+  saveCart();
+  updateCartUI();
+}
+
+document.getElementById('cartBtn')?.addEventListener('click', () => {
+  document.getElementById('cart-modal').style.display = 'flex';
 });
+document.getElementById('closeCartBtn')?.addEventListener('click', () => {
+  document.getElementById('cart-modal').style.display = 'none';
+});
+document.getElementById('logoutBtn')?.addEventListener('click', () => {
+  localStorage.removeItem('loggedIn');
+  localStorage.removeItem('cart');
+  location.reload();
+});
+
+// Expose login globally for inline button
+window.login = login;
