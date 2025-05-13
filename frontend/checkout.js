@@ -48,6 +48,7 @@ async function submitOrder() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       userId: user.id || 1,  // fallback
+      userEmail: user.email
       cartItems: cart,
       total,
       tax,
