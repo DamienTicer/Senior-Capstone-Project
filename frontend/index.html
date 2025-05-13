@@ -85,7 +85,7 @@
     <div class="cartModalContent">
       <h2>Your Cart</h2>
       <ul id="cart-items"></ul>
-      <button onclick="checkout()">Checkout</button>
+      <button id="checkoutBtn" class ="checkoutBtn">Checkout</button>
       <button id="closeCartBtn" class="closeCartBtn">Close</button>
     </div>
   </div>
@@ -309,6 +309,10 @@ document.getElementById('cartBtn').addEventListener('click', () => {
 
 document.getElementById('closeCartBtn').addEventListener('click', () => {
   document.getElementById('cart-modal').style.display = 'none';
+});
+
+document.getElementById('checkoutBtn').addEventListener('click', () => {
+  window.location.href = 'checkout.html'; // ✅ Navigate to checkout page
 });
 
 window.login = login; // expose login globally
