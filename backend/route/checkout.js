@@ -22,9 +22,9 @@ router.post('/checkout', async (req, res) => {
       await db.promise().execute(
         'INSERT INTO order_items (order_id, product_id, quantity) VALUES (?, ?, ?)',
         [orderId, item.productId || 0, quantity]
-      );
-
-      // ✅ Insert into purchase_history
+  
+      //  Insert into purchase_history
+ main
       await db.promise().execute(
         'INSERT INTO purchase_history (user_email, product_name, quantity, price) VALUES (?, ?, ?, ?)',
         [userEmail, item.name, quantity, item.price]
