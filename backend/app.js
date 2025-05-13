@@ -4,6 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const app = express();
+const checkoutRoute = require('./route/checkout');
 const connection = require('./initDB');
 
 // Middleware
@@ -23,6 +24,7 @@ connection.connect(err => {
 });
 
 // ====================== ROUTES ========================= //
+app.use('/api', checkoutRoute);
 
 // Home/Health Check
 app.get('/', (req, res) => {
