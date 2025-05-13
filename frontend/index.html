@@ -7,16 +7,6 @@
   <link rel="icon" href="./images/favicon.ico" type="image/x-icon" />
 
   <!-- General Styles -->
-  <link rel="stylesheet" href="./vendor/bootstrap/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="./fonts/font-awesome-4.7.0/css/font-awesome.min.css" />
-  <link rel="stylesheet" href="./fonts/iconic/css/material-design-iconic-font.min.css" />
-  <link rel="stylesheet" href="./vendor/animate/animate.css" />
-  <link rel="stylesheet" href="./vendor/css-hamburgers/hamburgers.min.css" />
-  <link rel="stylesheet" href="./vendor/animsition/css/animsition.min.css" />
-  <link rel="stylesheet" href="./vendor/select2/select2.min.css" />
-  <link rel="stylesheet" href="./vendor/daterangepicker/daterangepicker.css" />
-  <link rel="stylesheet" href="./css/util.css" />
-  <link rel="stylesheet" href="./css/main.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -80,6 +70,10 @@
   </section>
 
   <div id="products" class="technology"></div>
+
+  <!-- Personalized Recommendations -->
+  <h2 class="section-title">Recommended for You</h2>
+  <div id="recommended-products" class="technology"></div>
 
   <div id="cart-modal" class="cartModal" style="display: none;">
     <div class="cartModalContent">
@@ -146,15 +140,6 @@
 </div>
 
 <!-- Scripts -->
-<script src="./vendor/jquery/jquery-3.2.1.min.js"></script>
-<script src="./vendor/bootstrap/js/popper.js"></script>
-<script src="./vendor/bootstrap/js/bootstrap.min.js"></script>
-<script src="./vendor/select2/select2.min.js"></script>
-<script src="./vendor/tilt/tilt.jquery.min.js"></script>
-<script>
-  $('.js-tilt').tilt({ scale: 1.1 });
-</script>
-
 <script type="module">
 import { fetchSchoolProfile } from './API.js'; // ✅ Make sure API.js exists in js/
 
@@ -202,6 +187,7 @@ async function loadProfile() {
 
   allProducts = profileData.technologyOnSale; // <-- store products globally
   renderProducts(allProducts);
+  loadRecommendations();
 
   const techContainer = document.getElementById('products');
   techContainer.innerHTML = '';
@@ -223,6 +209,51 @@ async function loadProfile() {
       addToCart(item);
     });
   });
+
+  async function loadRecommendations() {
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (!user?.email) return;
+
+    try {
+      const res = await fetch(`http://localhost:3000/api/checkout/purchaseHistory/${user.email}`);
+      const data = await res.json();
+      const history = data.history;
+
+      if (!history || history.length === 0) return;
+
+      const recommendedContainer = document.getElementById('recommended-products');
+
+      const seen = new Set();
+
+      history.forEach(purchase => {
+        const match = allProducts.find(p =>
+          p.name.toLowerCase().includes(purchase.product_name.toLowerCase()) ||
+          purchase.product_name.toLowerCase().includes(p.name.toLowerCase())
+        );
+
+        if (match && !seen.has(match.name)) {
+          seen.add(match.name);
+
+          const card = document.createElement('div');
+          card.className = 'deviceItem';
+          card.innerHTML = `
+            <img class="product-image" src="./img/${match.imageUrl}" alt="${match.name}" onerror="this.onerror=null; this.src='./img/default.jpg';" />
+            <h2 class="sliderTitle">${match.name}</h2>
+            <p>${match.description}</p>
+            <h3 class="sliderPrice">${match.price}</h3>
+            <button class="buyButton">Buy Now</button>
+          `;
+          recommendedContainer.appendChild(card);
+
+          card.querySelector('.buyButton').addEventListener('click', () => {
+            addToCart(match);
+          });
+        }
+      });
+    } catch (err) {
+      console.error('Recommendation error:', err);
+    }
+  }
 }
 
 function renderProducts(products, highlight = '') {
@@ -366,6 +397,7 @@ menuItems.forEach(item => {
 
     if (category === 'all') {
       renderProducts(allProducts); // <-- Reset to show everything
+      loadRecommendations();
       document.querySelector('.searchInput').value = ''; // Clear search box
     } else {
       const filtered = allProducts.filter(product =>

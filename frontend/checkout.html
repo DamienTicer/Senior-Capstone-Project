@@ -1,12 +1,30 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Checkout</title>
-  <script src="checkout.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Checkout - Bowie Tech Discounts</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Checkout</h1>
-  <div id="order-summary"></div>
+
+<div class="checkoutContainer">
+  <div class="checkoutHeader">
+    <h1>🛒 Checkout</h1>
+    <button onclick="goHome()" class="checkoutBackBtn">🏠 Home</button>
+  </div>
+
+  <div class="checkoutContent">
+    <div class="checkoutItems" id="item-list">
+      <!-- JS populates cart items here -->
+    </div>
+
+    <div class="checkoutSummary" id="order-summary">
+      <!-- JS populates totals here -->
+    </div>
+  </div>
+</div>
+
+<script src="checkout.js"></script>
 </body>
 </html>

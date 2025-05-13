@@ -503,3 +503,113 @@ footer {
 .loginButton:hover {
   background-color: #3b7bdc;
 }
+
+/* ======= CHECKOUT PAGE ======= */
+.checkoutContainer {
+  max-width: 1100px;
+  margin: 40px auto;
+  background-color: #f9fbff;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.1);
+  font-family: 'Lato', sans-serif;
+}
+
+.checkoutHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.checkoutBackBtn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.checkoutBackBtn:hover {
+  background-color: #005dc0;
+}
+
+.checkoutContent {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+
+.checkoutItems {
+  flex: 2;
+}
+
+.checkoutItem {
+  background-color: white;
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.checkoutItemName {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.checkoutRemoveBtn {
+  background-color: crimson;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.checkoutSummary {
+  flex: 1;
+  background-color: white;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  min-width: 260px;
+}
+
+.checkoutSummary h3 {
+  margin-top: 20px;
+}
+
+.checkoutSummary p {
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.checkoutSummary button {
+  width: 100%;
+  padding: 12px;
+  background-color: #28a745;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.checkoutSummary button:hover {
+  background-color: #1e8736;
+}
+
+#recommended-products {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center;
+  padding: 30px;
+}
