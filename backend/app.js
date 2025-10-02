@@ -1,202 +1,142 @@
 // backend/app.js
-
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const app = express();
-const checkoutRoutes = require('./route/checkout');
-const connection = require('./initDB');
 
-// Middleware
+const { initDb } = require('./initDB');           // async DB initializer
+const checkoutRoutes = require('./route/checkout'); // uses req.app.locals.db
+
+// --- create app BEFORE using it ---
+const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Serve static images from frontend/img
+// Static assets (images)
 app.use('/img', express.static(path.join(__dirname, '../frontend/img')));
 
-// Verify database connection
-connection.connect(err => {
-  if (err) {
-    console.error('❗️ Database connection failed:', err.stack);
-    process.exit(1);
-  }
-  console.log('✅ Database connection successful.');
-});
+// Basic health (no DB needed)
+app.get('/', (_req, res) => res.send('Bowie Tech Discount API is starting…'));
+app.get('/health', (_req, res) => res.status(200).json({ status: 'Server is up' }));
 
-// ====================== ROUTES ========================= //
-// checkout route
-app.use('/api/checkout', checkoutRoutes);
+// Bootstrap DB, then mount DB-dependent routes and start server
+(async () => {
+  try {
+    const db = await initDb();   // waits for DB create/connect/seed
+    app.locals.db = db;
 
-// Home/Health Check
-app.get('/', (req, res) => {
-  res.send('Bowie Tech Discount API is running...');
-});
+    // Mount routes that use the DB AFTER app.locals.db is set
+    app.use('/api/checkout', checkoutRoutes);
 
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'Server is running fine!' });
-});
-
-// ================== LOGIN ==================
-app.post('/login', (req, res) => {
-  const { email } = req.body;
-
-  if (!email || !email.endsWith('@students.bowiestate.edu')) {
-    return res.status(400).json({ message: 'Invalid email domain' });
-  }
-
-  const checkUserQuery = `SELECT * FROM users WHERE email = ?`;
-  connection.query(checkUserQuery, [email], (err, results) => {
-    if (err) {
-      console.error('❗️ Database error on SELECT:', err);
-      return res.status(500).json({ message: 'Database error' });
-    }
-
-    if (results.length > 0) {
-      const updateQuery = `UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE email = ?`;
-      connection.query(updateQuery, [email], err => {
-        if (err) console.error('❗️ Database error on UPDATE:', err);
-      });
-      return res.json({
-        message: 'Login successful!',
-        user: results[0]
-      });
-    }
-
-    const insertQuery = `INSERT INTO users (email) VALUES (?)`;
-    connection.query(insertQuery, [email], (err, result) => {
-      if (err) {
-        console.error('❗️ Database error on INSERT:', err);
-        return res.status(500).json({ message: 'Insert error' });
+    // ====== Your other routes (already converted to use req.app.locals.db) ======
+    app.post('/login', async (req, res) => {
+      try {
+        const { email } = req.body;
+        if (!email || !email.endsWith('@students.bowiestate.edu')) {
+          return res.status(400).json({ message: 'Invalid email domain' });
+        }
+        const [users] = await req.app.locals.db.query(
+          'SELECT * FROM users WHERE email = ?',
+          [email]
+        );
+        if (users.length > 0) {
+          await req.app.locals.db.query(
+            'UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE email = ?',
+            [email]
+          );
+          return res.json({ message: 'Login successful!', user: users[0] });
+        }
+        const [ins] = await req.app.locals.db.query(
+          'INSERT INTO users (email) VALUES (?)',
+          [email]
+        );
+        return res.json({
+          message: 'New user created successfully!',
+          user: { id: ins.insertId, email, created_at: new Date(), last_login: new Date() }
+        });
+      } catch (err) {
+        console.error('❗️ /login error:', err);
+        return res.status(500).json({ message: 'Database error' });
       }
-
-      const newUser = {
-        id: result.insertId,
-        email,
-        created_at: new Date(),
-        last_login: new Date()
-      };
-      res.json({
-        message: 'New user created successfully!',
-        user: newUser
-      });
     });
-  });
-});
 
-// ================== REGISTER ==================
-app.post('/register', (req, res) => {
-  const { email } = req.body;
-
-  if (!email) {
-    return res.status(400).json({ message: 'Email is required.' });
-  }
-
-  if (!email.endsWith('@students.bowiestate.edu')) {
-    return res.status(400).json({ message: 'Invalid email domain' });
-  }
-
-  console.log(`📝 Attempting to register: ${email}`);
-
-  const checkUserQuery = `SELECT * FROM users WHERE email = ?`;
-  connection.query(checkUserQuery, [email], (err, results) => {
-    if (err) {
-      console.error('❗️ Database error on SELECT (register):', err);
-      return res.status(500).json({ message: 'Database error' });
-    }
-
-    if (results.length > 0) {
-      console.warn(`⚠️ Email already exists: ${email}`);
-      return res.status(409).json({ message: 'Account already exists' });
-    }
-
-    const insertQuery = `INSERT INTO users (email) VALUES (?)`;
-    connection.query(insertQuery, [email], (err, result) => {
-      if (err) {
-        console.error('❗️ Database error on INSERT:', err);
+    app.post('/register', async (req, res) => {
+      try {
+        const { email } = req.body;
+        if (!email) return res.status(400).json({ message: 'Email is required.' });
+        if (!email.endsWith('@students.bowiestate.edu')) {
+          return res.status(400).json({ message: 'Invalid email domain' });
+        }
+        const [users] = await req.app.locals.db.query(
+          'SELECT * FROM users WHERE email = ?',
+          [email]
+        );
+        if (users.length > 0) return res.status(409).json({ message: 'Account already exists' });
+        const [ins] = await req.app.locals.db.query(
+          'INSERT INTO users (email) VALUES (?)',
+          [email]
+        );
+        return res.json({
+          message: 'Registration successful!',
+          user: { id: ins.insertId, email, created_at: new Date(), last_login: new Date() }
+        });
+      } catch (err) {
+        console.error('❗️ /register error:', err);
         return res.status(500).json({ message: 'Registration failed' });
       }
-
-      const newUser = {
-        id: result.insertId,
-        email,
-        created_at: new Date(),
-        last_login: new Date()
-      };
-
-      console.log(`✅ New user registered: ${email}`);
-      res.json({
-        message: 'Registration successful!',
-        user: newUser
-      });
     });
-  });
-});
 
-// ================== PROFILE ==================
-app.get('/api/profile/:email', (req, res) => {
-  const { email } = req.params;
-  const query = `SELECT * FROM users WHERE email = ?`;
+    app.get('/api/profile/:email', async (req, res) => {
+      try {
+        const { email } = req.params;
+        const [rows] = await req.app.locals.db.query(
+          'SELECT * FROM users WHERE email = ?',
+          [email]
+        );
+        if (rows.length === 0) return res.status(404).json({ error: 'User not found' });
+        return res.json(rows[0]);
+      } catch (err) {
+        console.error('❗️ /api/profile error:', err);
+        return res.status(500).json({ error: 'Database error' });
+      }
+    });
 
-  connection.query(query, [email], (err, results) => {
-    if (err) {
-      console.error('❗️ Database error on SELECT profile:', err);
-      return res.status(500).json({ error: 'Database error' });
-    }
+    app.get('/products', async (req, res) => {
+      try {
+        const [rows] = await req.app.locals.db.query('SELECT * FROM products');
+        const products = rows.map(p => ({
+          ...p,
+          image_url: p.image_url && p.image_url.trim() !== '' ? p.image_url : 'default.jpg'
+        }));
+        return res.json(products);
+      } catch (err) {
+        console.error('❗️ /products error:', err);
+        return res.status(500).json({ message: 'Failed to fetch products' });
+      }
+    });
 
-    if (results.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
-    }
+    app.delete('/api/deleteProfile/:email', async (req, res) => {
+      try {
+        const { email } = req.params;
+        if (!email) return res.status(400).json({ message: 'Email is required.' });
+        const [result] = await req.app.locals.db.query(
+          'DELETE FROM users WHERE email = ?',
+          [email]
+        );
+        if (result.affectedRows === 0) return res.status(404).json({ message: 'User not found' });
+        console.log(`✅ Deleted user: ${email}`);
+        return res.json({ message: 'Profile deleted successfully.' });
+      } catch (err) {
+        console.error('❗️ /api/deleteProfile error:', err);
+        return res.status(500).json({ message: 'Database error' });
+      }
+    });
 
-    res.json(results[0]);
-  });
-});
-
-// ================== PRODUCTS ==================
-app.get('/products', (req, res) => {
-  const query = `SELECT * FROM products`;
-  connection.query(query, (err, results) => {
-    if (err) {
-      console.error('❗️ Error fetching products:', err);
-      return res.status(500).json({ message: 'Failed to fetch products' });
-    }
-
-    const productsWithFallback = results.map(product => ({
-      ...product,
-      image_url: product.image_url && product.image_url.trim() !== ''
-        ? product.image_url
-        : 'default.jpg'
-    }));
-
-    res.json(productsWithFallback);
-  });
-});
-
-// ================== DELETE PROFILE ==================
-app.delete('/api/deleteProfile/:email', (req, res) => {
-  const { email } = req.params;
-
-  if (!email) {
-    return res.status(400).json({ message: 'Email is required.' });
+    const PORT = process.env.PORT || 3000; // don’t use 3306
+    app.listen(PORT, () => {
+      console.log(`🚀 Backend running at http://localhost:${PORT}`);
+    });
+  } catch (err) {
+    console.error('❗️ Failed to initialize database:', err);
+    process.exit(1);
   }
-
-  const deleteUserQuery = `DELETE FROM users WHERE email = ?`;
-  connection.query(deleteUserQuery, [email], (err, result) => {
-    if (err) {
-      console.error('❗️ Error deleting user:', err);
-      return res.status(500).json({ message: 'Database error' });
-    }
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    console.log(`✅ Deleted user: ${email}`);
-    res.json({ message: 'Profile deleted successfully.' });
-  });
-});
-
-// ================== START SERVER ==================
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
-});
+})();
